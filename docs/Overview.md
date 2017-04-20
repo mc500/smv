@@ -37,9 +37,6 @@
 	* LDAP Server
 		* 사용자 정보 조회 및 인증을 위한 Directory Service 서버
 
-### Entities
-
-
 ## Usecase Name Format
 
 * SMV-000-000-XXXX
@@ -55,7 +52,7 @@
 
 ## Usecases
 
-* [SMV-UCS-000-001-사용자 로그인](usecases/SMV-UCS-000-001-사용자_로그인.md)
+* [SMV-UCS-000-001-사용자 로그인](usecases/SMV-UCS-000-001-사용자_로그인.md)
 * [SMV-UCS-000-002-사용자 로그아웃](usecases/SMV-UCS-000-002-사용자_로그아웃.md)
 * [SMV-UCS-100-001-방문 예정 정보 추가](usecases/SMV-UCS-100-001-방문_예정_정보_추가.md)
 * [SMV-UCS-100-002-방문 예정 정보 조회](usecases/SMV-UCS-100-002-방문_예정_정보_조회.md)
