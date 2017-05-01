@@ -1,0 +1,473 @@
+swagger: '2.0'
+info:
+  title: SMV API
+  description: Simple Visitor Managment API
+  version: 0.0.1
+schemes:
+  - http
+  - https
+basePath: /api/smv/v1
+produces:
+  - application/json
+paths:
+  '/user/{id}':
+    get:
+      summary: 주어진 id로 사용자 정보를 검색
+      tags:
+        - User API
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 사용자 정보
+          schema:
+            $ref: '#/definitions/UserInfo'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/userinfo:
+    get:
+      summary: 로그인한 사용자의 정보를 조회
+      tags:
+        - User API
+      responses:
+        '200':
+          description: 사용자 정보
+          schema:
+            $ref: '#/definitions/UserInfo'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/user/role/{id}/{role}':
+    put:
+      summary: 사용자 role 정보 변경
+      tags:
+        - Admin API
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: role
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /auth/login:
+    post:
+      summary: 주어진 인증 정보로 로그인
+      tags:
+        - Auth API
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LoginObject'
+      responses:
+        '200':
+          description: 로그인 성공
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /auth/logout:
+    get:
+      summary: 로그인 상태에서 로그아웃
+      tags:
+        - Auth API
+      responses:
+        '200':
+          description: 로그아웃 성공
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /visit:
+    post:
+      summary: 방문 정보를 생성
+      tags:
+        - Visiting API
+        - Management API
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/VisitingObject'
+      responses:
+        '200':
+          description: 방문 정보 생성 성공
+        '409':
+          description: 기존에 존재하는 정보
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json: |-
+              {
+                "error": "conflict",
+                "reason": "Document update conflict.",
+                "statusCode": 409
+              }
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/visit/{id}':
+    get:
+      summary: 주어진 id로 방문 정보 조회
+      tags:
+        - Visiting API
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 방문 정보
+          schema:
+            $ref: '#/definitions/VisitingObject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: 기존 방문 정보 변경
+      tags:
+        - Visiting API
+        - Management API
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/VisitingObject'
+      responses:
+        '200':
+          description: 변경 성공
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: 기존 방문 정보 삭제
+      tags:
+        - Visiting API
+        - Management API
+      parameters:
+        - name: id
+          in: query
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 삭제 성공
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /visit/search:
+    get:
+      summary: 주어진 조건을 만족하는 모든 방문 정보 조회
+      tags:
+        - Visiting API
+      parameters:
+        - name: keyword
+          in: query
+          type: string
+          description: search keyword
+        - name: type
+          in: query
+          type: string
+          description: search category
+        - name: page
+          in: query
+          type: string
+          description: index of the page
+        - name: size
+          in: query
+          type: string
+          description: number of items in a page
+      responses:
+        '200':
+          description: 방문 정보 리스트
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/VisitingObject'
+              paging:
+                $ref: '#/definitions/PagingInfo'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /badge:
+    post:
+      summary: 신규 출입카드 생성
+      tags:
+        - Badge API
+        - Management API
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/BadgeObject'
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Conflict
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json: |-
+              {
+                "error": "failed to create a room",
+                "reason": "The site is not exist.",
+                "statusCode": 404
+              }
+        '409':
+          description: Conflict
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json: |-
+              {
+                "error": "conflict",
+                "reason": "Document update conflict.",
+                "statusCode": 409
+              }
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/badge/{id}':
+    get:
+      summary: 출입카드 정보 조회
+      tags:
+        - Badge API
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 출입 카드 정보
+          schema:
+            $ref: '#/definitions/BadgeObject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: 출입 카드 정보 변경
+      tags:
+        - Badge API
+        - Management API
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/BadgeObject'
+      responses:
+        '200':
+          description: 출입 카드 정보 변경 완료
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: 출입 카드 정보 삭제
+      tags:
+        - Badge API
+        - Management API
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 출입 카드 정보 삭제 완료
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  VisitingObject:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 10103023023010
+      date:
+        type: string
+        example: '2017-04-28 12:10:00 GMT+09:00'
+      updated:
+        type: integer
+        format: int64
+        example: 1493349000000
+      visitor:
+        $ref: '#/definitions/VisitorInfo'
+      escort:
+        $ref: '#/definitions/EscortEmployeeInfo'
+      agreement:
+        $ref: '#/definitions/AgreementInfo'
+  VisitorInfo:
+    type: object
+    properties:
+      name:
+        type: string
+        example: 'Jane, Doe'
+      title:
+        type: string
+        example: Dr.
+      contact:
+        type: string
+        example: +82-1-1234-0678
+      email:
+        type: string
+        example: jane.doe@customer.com
+      nationality:
+        type: string
+        example: Korean
+      company:
+        type: string
+        example: Customers Inc
+  EscortEmployeeInfo:
+    type: object
+    properties:
+      id:
+        type: string
+        example: CN=John Doe/OU=ACME/O=IBM
+      name:
+        type: string
+        example: John Doe
+      title:
+        type: string
+        example: Mr.
+      email:
+        type: string
+        example: john.doe@acme.ibm.com
+      dept:
+        type: string
+        example: Client Innovation Lab
+  AgreementInfo:
+    type: object
+    properties:
+      templateid:
+        type: string
+        example: 238a8a7d77f7bf
+      agreement:
+        type: string
+        example: User agreement blabla
+      date:
+        type: string
+        example: '2017-04-28 12:12:10 GMT+09:00'
+      signature:
+        type: string
+        example: 'data:image/jpeg;base64,R0lGODlhDwAOAOYAAAAAAP'
+  BadgeObject:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 12392391239
+      type:
+        type: string
+        example: VISITOR
+      number:
+        type: string
+        example: 1
+  LoginObject:
+    type: object
+    required:
+      - email
+      - passwd
+    properties:
+      email:
+        type: string
+        example: john.doe@acme.ibm.com
+      passwd:
+        type: string
+        example: ibmpassw0rd
+  UserInfo:
+    type: object
+    required:
+      - userid
+      - name
+    properties:
+      userid:
+        type: string
+        example: CN=John Doe/OU=ACME/O=IBM
+      serial:
+        type: string
+        example: 1234567890
+      name:
+        type: string
+        example: John Doe
+      phone:
+        type: string
+        example: +82-2-1234-0000
+      mobile:
+        type: string
+        example: +82-10-1234-0000
+      email:
+        type: string
+        example: john.doe@acme.ibm.com
+      role:
+        type: string
+        example: 'RECEPTION, ESCORT, ADMIN'
+  PagingInfo:
+    type: object
+    properties:
+      page:
+        type: integer
+        format: int64
+        example: 1
+        description: 현재 페이지
+      total:
+        type: integer
+        format: int64
+        example: 10
+        description: 전체 페이지 갯수
+      size:
+        type: integer
+        format: int64
+        example: 20
+        description: 페이지가 가진 아이템 크기
+  Error:
+    type: object
+    properties:
+      error:
+        type: string
+        example: failed to get document
+      reason:
+        type: string
+        example: insufficient parameter
+      statusCode:
+        type: integer
+        format: int32
+        example: 500
