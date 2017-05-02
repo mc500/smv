@@ -1,0 +1,104 @@
+swagger: '2.0'
+info:
+  title: SMV User Service API
+  description: Simple Visitor Managment User Service API
+  version: 0.0.2
+schemes:
+  - http
+  - https
+basePath: /api/smv/v1
+produces:
+  - application/json
+paths:
+  '/user/{id}':
+    get:
+      summary: 주어진 id로 사용자 정보를 검색
+      tags:
+        - 사용자정보
+      parameters:
+        - name: id
+          description: 사용자 ID
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 사용자 정보
+          schema:
+            $ref: '#/definitions/UserObject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/user/{id}/role/{role}':
+    put:
+      summary: 사용자 role 정보 변경
+      tags:
+        - 사용자정보
+      parameters:
+        - name: id
+          description: 사용자 ID
+          in: path
+          type: string
+          required: true
+        - name: role
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 사용자 role 정보 변경 완료
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  UserObject:
+    type: object
+    properties:
+      userid:
+        type: string
+        description: 사용자 ID
+        example: CN=John Doe/OU=ACME/O=IBM
+      serial:
+        type: string
+        description: 사용자 사번
+        example: 1234567890
+      name:
+        type: string
+        description: 사용자 성명
+        example: John Doe
+      phone:
+        type: string
+        description: 유선전화번호
+        example: +82-2-1234-0000
+      mobile:
+        type: string
+        description: 휴대전화번호
+        example: +82-10-1234-0000
+      email:
+        type: string
+        description: 이메일 연락처
+        example: john.doe@acme.ibm.com
+      role:
+        type: string
+        description: 사용자 역할 정보
+        enum:
+          - RECEPTION
+          - ESCORT
+          - ADMIN
+  Error:
+    type: object
+    properties:
+      error:
+        type: string
+        example: failed to get document
+      reason:
+        type: string
+        example: insufficient parameter
+      statusCode:
+        type: integer
+        format: int32
+        example: 500
+
+

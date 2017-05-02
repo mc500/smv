@@ -1,0 +1,199 @@
+swagger: '2.0'
+info:
+  title: SMV Temp Badge Service API
+  description: Simple Visitor Managment Temporary Badge API
+  version: 0.0.2
+schemes:
+  - http
+  - https
+basePath: /api/smv/v1
+produces:
+  - application/json
+paths:
+  '/badge':
+    post:
+      summary: 임시 출입증 신규 생성
+      tags:
+        - 임시출입증
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/BadgeObject'
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Conflict
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json: |-
+              {
+                "error": "failed to create a room",
+                "reason": "The site is not exist.",
+                "statusCode": 404
+              }
+        '409':
+          description: Conflict
+          schema:
+            $ref: '#/definitions/Error'
+          examples:
+            application/json: |-
+              {
+                "error": "conflict",
+                "reason": "Document update conflict.",
+                "statusCode": 409
+              }
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/badge/{id}':
+    get:
+      summary: 임시 출입증 정보 조회
+      tags:
+        - 임시출입증
+      parameters:
+        - name: id
+          description: 임시출입증 ID
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 임시 출입증 정보
+          schema:
+            $ref: '#/definitions/BadgeObject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: 임시 출입증 정보 변경
+      tags:
+        - 임시출입증
+      parameters:
+        - name: id
+          description: 임시출입증 ID
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/BadgeObject'
+      responses:
+        '200':
+          description: 임시 출입증 정보 변경 완료
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: 임시 출입증 정보 삭제
+      tags:
+        - 임시출입증
+      parameters:
+        - name: id
+          description: 임시 출입증 ID
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: 임시 출입증 정보 삭제 완료
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/badge/list':
+    get:
+      summary: 주어진 조건을 만족하는 임시 출입증 정보 조회
+      tags:
+        - 임시출입증
+      parameters:
+        - name: type
+          description: 검색 종류
+          in: query
+          type: string
+          enum: [NONE, TYPE, NUMBER]
+        - name: keyword
+          description: 검색어
+          in: query
+          type: string
+        - name: page
+          description: 페이지 인덱스 (0부터 시작)
+          in: query
+          type: integer
+          format: int32
+        - name: size
+          description: 한 페이지당 아이템 갯수
+          in: query
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: 방문 정보 리스트
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/BadgeObject'
+              paging:
+                $ref: '#/definitions/PagingInfo'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  BadgeObject:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 임시 출입증 ID
+        example: 12392391239
+      type:
+        type: string
+        description: 임시 출입증 종류
+        enum: [VISITOR]
+      number:
+        type: string
+        description: 임시 출입증 번호
+        example: 1
+  PagingInfo:
+    type: object
+    properties:
+      page:
+        type: integer
+        format: int32
+        description: 현재 페이지
+        example: 1
+      total:
+        type: integer
+        format: int32
+        description: 전체 페이지 갯수
+        example: 10
+      size:
+        type: integer
+        format: int32
+        description: 하나의 페이지가 가진 아이템 크기
+        example: 20
+  Error:
+    type: object
+    properties:
+      error:
+        type: string
+        example: failed to get document
+      reason:
+        type: string
+        example: insufficient parameter
+      statusCode:
+        type: integer
+        format: int32
+        example: 500
