@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: SMV API
   description: Simple Visitor Managment API
-  version: 0.0.1
+  version: 0.0.2
 schemes:
   - http
   - https
@@ -14,9 +14,10 @@ paths:
     get:
       summary: 주어진 id로 사용자 정보를 검색
       tags:
-        - User API
+        - 사용자정보
       parameters:
         - name: id
+          description: 사용자 ID
           in: path
           type: string
           required: true
@@ -24,32 +25,19 @@ paths:
         '200':
           description: 사용자 정보
           schema:
-            $ref: '#/definitions/UserInfo'
+            $ref: '#/definitions/UserObject'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /user/userinfo:
-    get:
-      summary: 로그인한 사용자의 정보를 조회
-      tags:
-        - User API
-      responses:
-        '200':
-          description: 사용자 정보
-          schema:
-            $ref: '#/definitions/UserInfo'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  '/user/role/{id}/{role}':
+  '/user/{id}/role/{role}':
     put:
       summary: 사용자 role 정보 변경
       tags:
-        - Admin API
+        - 사용자정보
       parameters:
         - name: id
+          description: 사용자 ID
           in: path
           type: string
           required: true
@@ -64,17 +52,17 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /auth/login:
+  '/auth/login':
     post:
       summary: 주어진 인증 정보로 로그인
       tags:
-        - Auth API
+        - 사용자인증
       parameters:
         - name: body
           in: body
           required: true
           schema:
-            $ref: '#/definitions/LoginObject'
+            $ref: '#/definitions/LoginInfo'
       responses:
         '200':
           description: 로그인 성공
@@ -82,11 +70,11 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /auth/logout:
+  '/auth/logout':
     get:
       summary: 로그인 상태에서 로그아웃
       tags:
-        - Auth API
+        - 사용자인증
       responses:
         '200':
           description: 로그아웃 성공
@@ -94,12 +82,25 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /visit:
+  '/auth/userinfo':
+    get:
+      summary: 로그인한 사용자의 정보를 조회
+      tags:
+        - 사용자정보
+      responses:
+        '200':
+          description: 사용자 정보
+          schema:
+            $ref: '#/definitions/UserObject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  '/visit':
     post:
       summary: 방문 정보를 생성
       tags:
-        - Visiting API
-        - Management API
+        - 방문정보
       parameters:
         - name: body
           in: body
@@ -128,9 +129,10 @@ paths:
     get:
       summary: 주어진 id로 방문 정보 조회
       tags:
-        - Visiting API
+        - 방문정보
       parameters:
         - name: id
+          description: 방문정보 ID
           in: path
           type: string
           required: true
@@ -146,9 +148,13 @@ paths:
     put:
       summary: 기존 방문 정보 변경
       tags:
-        - Visiting API
-        - Management API
+        - 방문정보
       parameters:
+        - name: id
+          description: 방문정보 ID
+          in: path
+          type: string
+          required: true
         - name: body
           in: body
           required: true
@@ -164,11 +170,11 @@ paths:
     delete:
       summary: 기존 방문 정보 삭제
       tags:
-        - Visiting API
-        - Management API
+        - 방문정보
       parameters:
         - name: id
-          in: query
+          description: 방문정보 ID
+          in: path
           type: string
           required: true
       responses:
@@ -178,28 +184,36 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /visit/search:
+  '/visit/search':
     get:
       summary: 주어진 조건을 만족하는 모든 방문 정보 조회
       tags:
-        - Visiting API
+        - 방문정보
       parameters:
-        - name: keyword
+        - name: date
+          description: 방문일시 (ex.1493349000000, 밀리초, 브라우저 시간 기준)
           in: query
-          type: string
-          description: search keyword
+          type: integer
+          format: int64
         - name: type
+          description: 검색 종류
           in: query
           type: string
-          description: search category
+          enum: [NONE, NAME, EMAIL, CONTACT]
+        - name: keyword
+          description: 검색어
+          in: query
+          type: string
         - name: page
+          description: 페이지 인덱스 (0부터 시작)
           in: query
-          type: string
-          description: index of the page
+          type: integer
+          format: int32
         - name: size
+          description: 한 페이지당 아이템 갯수
           in: query
-          type: string
-          description: number of items in a page
+          type: integer
+          format: int32
       responses:
         '200':
           description: 방문 정보 리스트
@@ -216,12 +230,11 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /badge:
+  '/badge':
     post:
-      summary: 신규 출입카드 생성
+      summary: 임시 출입증 신규 생성
       tags:
-        - Badge API
-        - Management API
+        - 임시출입증
       parameters:
         - name: body
           in: body
@@ -259,17 +272,18 @@ paths:
             $ref: '#/definitions/Error'
   '/badge/{id}':
     get:
-      summary: 출입카드 정보 조회
+      summary: 임시 출입증 정보 조회
       tags:
-        - Badge API
+        - 임시출입증
       parameters:
         - name: id
+          description: 임시출입증 ID
           in: path
           type: string
           required: true
       responses:
         '200':
-          description: 출입 카드 정보
+          description: 임시 출입증 정보
           schema:
             $ref: '#/definitions/BadgeObject'
         default:
@@ -277,12 +291,12 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     put:
-      summary: 출입 카드 정보 변경
+      summary: 임시 출입증 정보 변경
       tags:
-        - Badge API
-        - Management API
+        - 임시출입증
       parameters:
         - name: id
+          description: 임시출입증 ID
           in: path
           type: string
           required: true
@@ -293,24 +307,24 @@ paths:
             $ref: '#/definitions/BadgeObject'
       responses:
         '200':
-          description: 출입 카드 정보 변경 완료
+          description: 임시 출입증 정보 변경 완료
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
     delete:
-      summary: 출입 카드 정보 삭제
+      summary: 임시 출입증 정보 삭제
       tags:
-        - Badge API
-        - Management API
+        - 임시출입증
       parameters:
         - name: id
+          description: 임시 출입증 ID
           in: path
           type: string
           required: true
       responses:
         '200':
-          description: 출입 카드 정보 삭제 완료
+          description: 임시 출입증 정보 삭제 완료
         default:
           description: Unexpected error
           schema:
@@ -321,13 +335,16 @@ definitions:
     properties:
       id:
         type: string
+        description: 방문정보 ID
         example: 10103023023010
       date:
         type: string
+        description: 방문정보 ID
         example: '2017-04-28 12:10:00 GMT+09:00'
       updated:
         type: integer
         format: int64
+        description: 방문정보 ID
         example: 1493349000000
       visitor:
         $ref: '#/definitions/VisitorInfo'
@@ -335,73 +352,122 @@ definitions:
         $ref: '#/definitions/EscortEmployeeInfo'
       agreement:
         $ref: '#/definitions/AgreementInfo'
+  BadgeObject:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 방문정보 ID
+        example: 12392391239
+      type:
+        type: string
+        description: 방문정보 ID
+        example: VISITOR
+      number:
+        type: string
+        description: 방문정보 ID
+        example: 1
+  UserObject:
+    type: object
+    properties:
+      userid:
+        type: string
+        description: 사용자 ID
+        example: CN=John Doe/OU=ACME/O=IBM
+      serial:
+        type: string
+        description: 사용자 사번
+        example: 1234567890
+      name:
+        type: string
+        description: 사용자 성명
+        example: John Doe
+      phone:
+        type: string
+        description: 유선전화번호
+        example: +82-2-1234-0000
+      mobile:
+        type: string
+        description: 휴대전화번호
+        example: +82-10-1234-0000
+      email:
+        type: string
+        description: 이메일 연락처
+        example: john.doe@acme.ibm.com
+      role:
+        type: string
+        description: 사용자 역할 정보
+        enum:
+          - RECEPTION
+          - ESCORT
+          - ADMIN
   VisitorInfo:
     type: object
     properties:
       name:
         type: string
-        example: 'Jane, Doe'
+        description: 방문자 성명
+        example: 'Jane Doe'
       title:
         type: string
+        description: 방문자 직함
         example: Dr.
       contact:
         type: string
+        description: 방문자 연락처
         example: +82-1-1234-0678
       email:
         type: string
+        description: 방문자 이메일
         example: jane.doe@customer.com
       nationality:
         type: string
-        example: Korean
+        description: 방문자 국적(영문표기)
+        example: South Korea
       company:
         type: string
+        description: 방문자 회사(학교, 또는 단체)
         example: Customers Inc
   EscortEmployeeInfo:
     type: object
     properties:
       id:
         type: string
+        description: 에스코트 직원 ID
         example: CN=John Doe/OU=ACME/O=IBM
       name:
         type: string
+        description: 에스코트 직원 성명
         example: John Doe
-      title:
-        type: string
-        example: Mr.
       email:
         type: string
+        description: 에스코트 직원 이메일
         example: john.doe@acme.ibm.com
       dept:
         type: string
+        description: 에스코트 직원 부서
         example: Client Innovation Lab
   AgreementInfo:
     type: object
     properties:
       templateid:
         type: string
+        description: 정보동의서 양식 ID
         example: 238a8a7d77f7bf
       agreement:
         type: string
+        description: 정보동의 내용
         example: User agreement blabla
       date:
-        type: string
-        example: '2017-04-28 12:12:10 GMT+09:00'
+        type: integer
+        format: int64
+        description: 정보동의 일시(ex.1493349000000, 밀리초, 브라우저 시간 기준)
+        example: 1493349000000
       signature:
         type: string
+        description: 정보동의 서명 정보 (이미지 Base64 Encoding)
         example: 'data:image/jpeg;base64,R0lGODlhDwAOAOYAAAAAAP'
-  BadgeObject:
-    type: object
-    properties:
-      id:
-        type: string
-        example: 12392391239
-      type:
-        type: string
-        example: VISITOR
-      number:
-        type: string
-        example: 1
-  LoginObject:
+  LoginInfo:
     type: object
     required:
       - email
@@ -409,55 +475,30 @@ definitions:
     properties:
       email:
         type: string
+        description: 방문정보 ID
         example: john.doe@acme.ibm.com
       passwd:
         type: string
+        description: 방문정보 ID
         example: ibmpassw0rd
-  UserInfo:
-    type: object
-    required:
-      - userid
-      - name
-    properties:
-      userid:
-        type: string
-        example: CN=John Doe/OU=ACME/O=IBM
-      serial:
-        type: string
-        example: 1234567890
-      name:
-        type: string
-        example: John Doe
-      phone:
-        type: string
-        example: +82-2-1234-0000
-      mobile:
-        type: string
-        example: +82-10-1234-0000
-      email:
-        type: string
-        example: john.doe@acme.ibm.com
-      role:
-        type: string
-        example: 'RECEPTION, ESCORT, ADMIN'
   PagingInfo:
     type: object
     properties:
       page:
         type: integer
-        format: int64
-        example: 1
+        format: int32
         description: 현재 페이지
+        example: 1
       total:
         type: integer
-        format: int64
-        example: 10
+        format: int32
         description: 전체 페이지 갯수
+        example: 10
       size:
         type: integer
-        format: int64
+        format: int32
+        description: 하나의 페이지가 가진 아이템 크기
         example: 20
-        description: 페이지가 가진 아이템 크기
   Error:
     type: object
     properties:
