@@ -1,0 +1,10 @@
+applications:
+- path: .
+  memory: 256M
+  instances: 1
+  domain: mybluemix.net
+  name: smv-userauth
+  host: smv-userauth
+  disk_quota: 1024M
+  services:
+  - Redis Cloud-smv
