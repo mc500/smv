@@ -28,12 +28,12 @@ paths:
       - name: "email"
         in: "formData"
         description: "사용자 Email"
-        required: false
+        required: true
         type: "string"
       - name: "passwd"
         in: "formData"
         description: "사용자 비밀번호"
-        required: false
+        required: true
         type: "string"
       responses:
         200:

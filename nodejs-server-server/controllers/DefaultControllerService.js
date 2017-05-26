@@ -28,8 +28,8 @@ exports.loginPOST = function(args, res, next) {
   /**
    * 주어진 인증 정보로 로그인
    *
-   * email String 사용자 Email (optional)
-   * passwd String 사용자 비밀번호 (optional)
+   * email String 사용자 Email
+   * passwd String 사용자 비밀번호
    * no response value expected for this operation
    **/
   res.end();
