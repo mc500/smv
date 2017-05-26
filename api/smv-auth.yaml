@@ -22,11 +22,9 @@ paths:
         - name: email
           in: formData
           type: string
-          required: true
           description: 사용자 Email
         - name: passwd
           in: formData
-          required: true
           type: string
           description: 사용자 비밀번호
       responses:
