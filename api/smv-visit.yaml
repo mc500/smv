@@ -1,16 +1,17 @@
 swagger: '2.0'
 info:
   title: SMV Visiting Service API
-  description: Simple Visitor Managment Visiting Service API
+  description: Simple Visitor Management Visiting Service API
   version: 0.0.2
 schemes:
   - http
   - https
-basePath: /api/smv/v1
+host: 'localhost:6004'
+basePath: /api/smv/v1/visit
 produces:
   - application/json
 paths:
-  '/visit':
+  /:
     post:
       summary: 방문 정보를 생성
       tags:
@@ -39,7 +40,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/visit/{id}':
+  '/{id}':
     get:
       summary: 주어진 id로 방문 정보 조회
       tags:
@@ -98,14 +99,14 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/visit/search':
+  /search:
     get:
       summary: 주어진 조건을 만족하는 모든 방문 정보 조회
       tags:
         - 방문정보
       parameters:
         - name: date
-          description: 방문일시 (ex.1493349000000, 밀리초, 브라우저 시간 기준)
+          description: '방문일시 (ex.1493349000000, 밀리초, 브라우저 시간 기준)'
           in: query
           type: integer
           format: int64
@@ -113,7 +114,11 @@ paths:
           description: 검색 종류
           in: query
           type: string
-          enum: [NONE, NAME, EMAIL, CONTACT]
+          enum:
+            - NONE
+            - NAME
+            - EMAIL
+            - CONTACT
         - name: keyword
           description: 검색어
           in: query
@@ -175,7 +180,7 @@ definitions:
       name:
         type: string
         description: 방문자 성명
-        example: 'Jane Doe'
+        example: Jane Doe
       title:
         type: string
         description: 방문자 직함
@@ -194,7 +199,7 @@ definitions:
         example: South Korea
       company:
         type: string
-        description: 방문자 회사(학교, 또는 단체)
+        description: '방문자 회사(학교, 또는 단체)'
         example: Customers Inc
   EscortEmployeeInfo:
     type: object
@@ -229,7 +234,7 @@ definitions:
       date:
         type: integer
         format: int64
-        description: 정보동의 일시(ex.1493349000000, 밀리초, 브라우저 시간 기준)
+        description: '정보동의 일시(ex.1493349000000, 밀리초, 브라우저 시간 기준)'
         example: 1493349000000
       signature:
         type: string
@@ -245,7 +250,8 @@ definitions:
       type:
         type: string
         description: 임시 출입증 종류
-        enum: [VISITOR]
+        enum:
+          - VISITOR
       number:
         type: string
         description: 임시 출입증 번호
@@ -253,7 +259,9 @@ definitions:
       returnYN:
         type: string
         description: 임시 출입증 반납 여부
-        enum: [YES, NO]
+        enum:
+          - 'YES'
+          - 'NO'
   PagingInfo:
     type: object
     properties:
@@ -285,4 +293,13 @@ definitions:
         type: integer
         format: int32
         example: 500
-
+consumes:
+  - application/json
+securityDefinitions:
+  api-key-1:
+    type: apiKey
+    description: ''
+    in: header
+    name: X-AUTH-TOKEN
+security:
+  - api-key-1: []

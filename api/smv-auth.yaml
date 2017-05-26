@@ -1,16 +1,17 @@
 swagger: '2.0'
 info:
-  title: SMV Auth Service API
-  description: Simple Visitor Managment Authentication Service API
-  version: 0.0.2
+  title: SMV User Auth Service API
+  description: Simple Visitor Management User Authentication Service API
+  version: 0.0.3
 schemes:
   - http
   - https
-basePath: /api/smv/v1
+host: 'localhost:6002'
+basePath: /api/smv/v1/auth
 produces:
   - application/json
 paths:
-  '/auth/login':
+  /login:
     post:
       summary: 주어진 인증 정보로 로그인
       tags:
@@ -29,11 +30,17 @@ paths:
       responses:
         '200':
           description: 로그인 성공
+          headers:
+            'X-AUTH-TOKEN':
+              description: Authentication Token
+              type: string
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/auth/logout':
+      security:
+        - {}
+  /logout:
     get:
       summary: 로그인 상태에서 로그아웃
       tags:
@@ -45,7 +52,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/auth/userinfo':
+  /auth/userinfo:
     get:
       summary: 로그인한 사용자의 정보를 조회
       tags:
@@ -107,5 +114,11 @@ definitions:
         type: integer
         format: int32
         example: 500
-
-
+securityDefinitions:
+  api-key-1:
+    type: apiKey
+    description: ''
+    in: header
+    name: X-AUTH-TOKEN
+security:
+  - api-key-1: []

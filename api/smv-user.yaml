@@ -1,16 +1,17 @@
 swagger: '2.0'
 info:
-  title: SMV User Service API
-  description: Simple Visitor Managment User Service API
-  version: 0.0.2
+  title: SMV User Info Service API
+  description: Simple Visitor Management User Info Service API
+  version: 0.0.3
 schemes:
   - http
   - https
-basePath: /api/smv/v1
+host: 'localhost:6003'
+basePath: /api/smv/v1/user
 produces:
   - application/json
 paths:
-  '/user/{id}':
+  '/{id}':
     get:
       summary: 주어진 id로 사용자 정보를 검색
       tags:
@@ -30,7 +31,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/user/{id}/role/{role}':
+  '/{id}/role/{role}':
     put:
       summary: 사용자 role 정보 변경
       tags:
@@ -100,5 +101,13 @@ definitions:
         type: integer
         format: int32
         example: 500
-
-
+consumes:
+  - application/json
+securityDefinitions:
+  api-key-1:
+    type: apiKey
+    description: ''
+    in: header
+    name: X-AUTH-TOKEN
+security:
+  - api-key-1: []

@@ -52,7 +52,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/auth/login':
+  /auth/login:
     post:
       summary: 주어진 인증 정보로 로그인
       tags:
@@ -71,11 +71,18 @@ paths:
       responses:
         '200':
           description: 로그인 성공
+          headers:
+            'X-AUTH-TOKEN':
+              description: Authentication Token
+              type: string
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/auth/logout':
+      security:
+        - {}
+      produces: []
+  /auth/logout:
     get:
       summary: 로그인 상태에서 로그아웃
       tags:
@@ -87,7 +94,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/auth/userinfo':
+  /auth/userinfo:
     get:
       summary: 로그인한 사용자의 정보를 조회
       tags:
@@ -101,7 +108,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/visit':
+  /visit:
     post:
       summary: 방문 정보를 생성
       tags:
@@ -189,14 +196,14 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/visit/search':
+  /visit/search:
     get:
       summary: 주어진 조건을 만족하는 모든 방문 정보 조회
       tags:
         - 방문정보
       parameters:
         - name: date
-          description: 방문일시 (ex.1493349000000, 밀리초, 브라우저 시간 기준)
+          description: '방문일시 (ex.1493349000000, 밀리초, 브라우저 시간 기준)'
           in: query
           type: integer
           format: int64
@@ -204,7 +211,11 @@ paths:
           description: 검색 종류
           in: query
           type: string
-          enum: [NONE, NAME, EMAIL, CONTACT]
+          enum:
+            - NONE
+            - NAME
+            - EMAIL
+            - CONTACT
         - name: keyword
           description: 검색어
           in: query
@@ -235,7 +246,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/badge':
+  /badge:
     post:
       summary: 임시 출입증 신규 생성
       tags:
@@ -334,7 +345,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/badge/list':
+  /badge/list:
     get:
       summary: 주어진 조건을 만족하는 임시 출입증 정보 조회
       tags:
@@ -344,7 +355,10 @@ paths:
           description: 검색 종류
           in: query
           type: string
-          enum: [NONE, TYPE, NUMBER]
+          enum:
+            - NONE
+            - TYPE
+            - NUMBER
         - name: keyword
           description: 검색어
           in: query
@@ -420,7 +434,8 @@ definitions:
       type:
         type: string
         description: 임시 출입증 종류
-        enum: [VISITOR]
+        enum:
+          - VISITOR
       number:
         type: string
         description: 임시 출입증 번호
@@ -455,7 +470,7 @@ definitions:
       name:
         type: string
         description: 방문자 성명
-        example: 'Jane Doe'
+        example: Jane Doe
       title:
         type: string
         description: 방문자 직함
@@ -474,7 +489,7 @@ definitions:
         example: South Korea
       company:
         type: string
-        description: 방문자 회사(학교, 또는 단체)
+        description: '방문자 회사(학교, 또는 단체)'
         example: Customers Inc
   EscortEmployeeInfo:
     type: object
@@ -509,7 +524,7 @@ definitions:
       date:
         type: integer
         format: int64
-        description: 정보동의 일시(ex.1493349000000, 밀리초, 브라우저 시간 기준)
+        description: '정보동의 일시(ex.1493349000000, 밀리초, 브라우저 시간 기준)'
         example: 1493349000000
       signature:
         type: string
@@ -525,7 +540,8 @@ definitions:
       type:
         type: string
         description: 임시 출입증 종류
-        enum: [VISITOR]
+        enum:
+          - VISITOR
       number:
         type: string
         description: 임시 출입증 번호
@@ -533,7 +549,9 @@ definitions:
       returnYN:
         type: string
         description: 임시 출입증 반납 여부
-        enum: [YES, NO]
+        enum:
+          - 'YES'
+          - 'NO'
   PagingInfo:
     type: object
     properties:
@@ -565,4 +583,17 @@ definitions:
         type: integer
         format: int32
         example: 500
-
+consumes:
+  - application/json
+  - application/x-www-form-urlencoded
+securityDefinitions:
+  basic-auth:
+    type: basic
+    description: ''
+  service-api-key:
+    type: apiKey
+    description: ''
+    in: header
+    name: X-AUTH-TOKEN
+security:
+  - service-api-key: []

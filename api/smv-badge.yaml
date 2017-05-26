@@ -1,16 +1,17 @@
 swagger: '2.0'
 info:
   title: SMV Temp Badge Service API
-  description: Simple Visitor Managment Temporary Badge API
-  version: 0.0.2
+  description: Simple Visitor Management Temporary Badge API
+  version: 0.0.3
 schemes:
   - http
   - https
-basePath: /api/smv/v1
+host: 'localhost:6001'
+basePath: /api/smv/v1/badge
 produces:
   - application/json
 paths:
-  '/badge':
+  /:
     post:
       summary: 임시 출입증 신규 생성
       tags:
@@ -50,7 +51,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/badge/{id}':
+  '/{id}':
     get:
       summary: 임시 출입증 정보 조회
       tags:
@@ -109,7 +110,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  '/badge/list':
+  /list:
     get:
       summary: 주어진 조건을 만족하는 임시 출입증 정보 조회
       tags:
@@ -119,7 +120,10 @@ paths:
           description: 검색 종류
           in: query
           type: string
-          enum: [NONE, TYPE, NUMBER]
+          enum:
+            - NONE
+            - TYPE
+            - NUMBER
         - name: keyword
           description: 검색어
           in: query
@@ -161,7 +165,8 @@ definitions:
       type:
         type: string
         description: 임시 출입증 종류
-        enum: [VISITOR]
+        enum:
+          - VISITOR
       number:
         type: string
         description: 임시 출입증 번호
@@ -197,3 +202,13 @@ definitions:
         type: integer
         format: int32
         example: 500
+consumes:
+  - application/json
+securityDefinitions:
+  api-key-1:
+    type: apiKey
+    description: ''
+    in: header
+    name: X-AUTH-TOKEN
+security:
+  - api-key-1: []
