@@ -48,7 +48,7 @@ paths:
             $ref: "#/definitions/inline_response_default"
       security:
       - {}
-      x-swagger-router-controller: ""
+      x-swagger-router-controller: "SMVUserAuthController"
   /logout:
     get:
       tags:
@@ -67,7 +67,7 @@ paths:
             $ref: "#/definitions/inline_response_default"
       security:
       - api-key-1: []
-      x-swagger-router-controller: ""
+      x-swagger-router-controller: "SMVUserAuthController"
   /auth/userinfo:
     get:
       tags:
@@ -88,7 +88,7 @@ paths:
             $ref: "#/definitions/inline_response_default"
       security:
       - api-key-1: []
-      x-swagger-router-controller: ""
+      x-swagger-router-controller: "SMVUserAuthController"
 securityDefinitions:
   api-key-1:
     description: ""
