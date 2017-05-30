@@ -68,12 +68,12 @@ paths:
       security:
       - api-key-1: []
       x-swagger-router-controller: "SMVUserAuthController"
-  /auth/userinfo:
+  /userinfo:
     get:
       tags:
       - "사용자인증"
       summary: "로그인한 사용자의 정보를 조회"
-      operationId: "authUserinfoGET"
+      operationId: "userinfoGET"
       produces:
       - "application/json"
       parameters: []
