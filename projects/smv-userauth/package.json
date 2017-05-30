@@ -1,20 +1,22 @@
 {
-	"name": "NodejsStarterApp",
-	"version": "0.0.3",
-  	"description": "Simple Visitor Management User Authentication Service API",
-	"private": true,
-	"scripts": {
-		"start": "node app.js"
-	},
-	"dependencies": {
-		"express": "4.13.x",
-		"cfenv": "1.0.x",
-		"connect": "^3.2.0",
-		"js-yaml": "^3.3.0",
-		"swagger-tools": "0.10.1"
-	},
-	"repository": {},
-	"engines": {
-		"node": "4.x"
-	} 
+  "name": "SMVUserAuthService",
+  "version": "0.0.3",
+  "description": "Simple Visitor Management User Authentication Service API",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "cfenv": "1.0.x",
+    "connect": "^3.2.0",
+    "express": "4.13.x",
+    "js-yaml": "^3.3.0",
+    "redis": "^2.7.1",
+    "swagger-tools": "0.10.1",
+    "uuid": "^3.0.1"
+  },
+  "repository": {},
+  "engines": {
+    "node": "4.x"
+  }
 }

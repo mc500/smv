@@ -1,8 +1,14 @@
 'use strict';
 
-var url = require('url');
+var url = require('url'),
+    SMVAuthTokenHelper = require('./SMVAuthTokenHelper');
 
-module.exports.authUserinfoGET = function (req, res, next) {
+function extractAuthToken(req) {
+  var token = req.headers['x-auth-token'];
+  return token;
+}
+
+module.exports.userinfoGET = function (req, res, next) {
   /**
    * 로그인한 사용자의 정보를 조회
    *
@@ -18,21 +24,26 @@ module.exports.authUserinfoGET = function (req, res, next) {
     "email" : "john.doe@acme.ibm.com"
   };
 
-  var token = getAuthToken(req);
-  validateToken(token, function(valid){
+  var token = extractAuthToken(req);
+  SMVAuthTokenHelper.isValidAuthToken(token, function(valid) {
     if (valid) {
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(example));
-      res.end(); 
+      // 
+      SMVAuthTokenHelper.getAuthTokenValue(token, 'userid', function(result){
+        if (result && result == example.email) {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(example));
+          res.end(); 
+        } else {
+          // Error 
+          res.statusCode = 500;
+          res.end('Internel Server Error');
+        }
+      });
     } else {
       res.statusCode = 401;
-      res.end('Unauthorized');      
+      res.end('Unauthorized');
     }
-    return;
   });
-
-  res.statusCode = 401;
-  res.end('Unauthorized');
 };
 
 module.exports.loginPOST = function (req, res, next) {
@@ -58,9 +69,24 @@ module.exports.loginPOST = function (req, res, next) {
     res.end('passwd is missing');
     return;
   }
-  if (args.email.value === 'john.doe@acme.ibm.com' && args.passwd.value === 'passw0rd') {
-    res.setHeader('X-AUTH-TOKEN', 'mytoken');
-    res.end('OK');
+
+  var email = args.email.value;
+  var passwd = args.passwd.value
+  if (email === 'john.doe@acme.ibm.com' && passwd === 'passw0rd') {
+    SMVAuthTokenHelper.generateAuthToken(function(token) {
+      // Set the key of user
+      SMVAuthTokenHelper.setAuthTokenValue(token, 'userid', email, function(result){
+        if (result) {
+          res.setHeader('X-AUTH-TOKEN', token);
+          res.end('OK'); 
+        } else {
+          // Error 
+          res.statusCode = 500;
+          res.end('Internel Server Error');
+        }
+      });
+    });
+
     return;
   }
   
@@ -75,27 +101,13 @@ module.exports.logoutGET = function (req, res, next) {
    *
    * no response value expected for this operation
    **/
-  var token = getAuthToken(req);
-  validateToken(token, function(valid){
-    if (valid) {
+  var token = extractAuthToken(req);
+  SMVAuthTokenHelper.invalidateAuthToken(token, function(valid) {
+      if (valid) {
       res.end('OK'); 
     } else {
       res.statusCode = 401;
       res.end('Unauthorized');      
     }
-    return;
   });
-
-  res.statusCode = 401;
-  res.end('Unauthorized');
 };
-
-function getAuthToken(req) {
-  var token = req.headers['x-auth-token'];
-  return token;
-}
-
-function validateToken(authToken, resultcb) {
-  // TODO: implement auth token validator
-  resultcb(authToken == 'mytoken');
-}
