@@ -4,7 +4,9 @@
   "description": "Simple Visitor Management User Authentication Service API",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "node_modules/.bin/mocha -u exports tests/unit/test-authtokenhelper.js",
+    "test-all": "find ./tests -name 'test-*.js' | xargs node_modules/.bin/mocha -u exports"
   },
   "dependencies": {
     "cfenv": "1.0.x",
@@ -18,5 +20,9 @@
   "repository": {},
   "engines": {
     "node": "4.x"
+  },
+  "devDependencies": {
+    "mocha": "^3.4.2",
+    "supertest": "^3.0.0"
   }
 }
