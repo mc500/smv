@@ -36,9 +36,6 @@ redisClient.on('error', function (err) {
 function tokenAsKey(token) {
   return token.replace(/-/gi, '_'); // replace all of '-' to '_'
 }
-function tokenAsHashKey(token) {
-  return tokenAsKey(token).concat('_hash');
-}
 
 // ----------------------------------------------------------------------------
 
@@ -48,7 +45,7 @@ function generateAuthToken(resultcb) {
 
   // step2. Set Key
   var key = tokenAsKey(token);
-  redisClient.set(key, 'ttl', function(error, result) {
+  redisClient.hset(key, '_expires', EXPIRES_AFTER_SECS, function(error, result) {
     
     if (error) {
       console.error('error: '+error);
@@ -96,7 +93,7 @@ function isValidAuthToken(token, resultcb) {
 }
 
 function getAuthTokenValue(token, field, resultcb) {
-  var key = tokenAsHashKey(token);
+  var key = tokenAsKey(token);
 
   redisClient.hget(key, field, function(error, result) {
     if (error) {
@@ -109,7 +106,7 @@ function getAuthTokenValue(token, field, resultcb) {
 }
 
 function setAuthTokenValue(token, field, value, resultcb) {
-  var key = tokenAsHashKey(token);
+  var key = tokenAsKey(token);
 
   redisClient.hset(key, field, value, function(error, result) {
     if (error) {
