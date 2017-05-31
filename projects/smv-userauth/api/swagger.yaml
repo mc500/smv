@@ -11,8 +11,6 @@ schemes:
 - "https"
 produces:
 - "application/json"
-security:
-- api-key-1: []
 paths:
   /login:
     post:
@@ -46,8 +44,6 @@ paths:
           description: "Unexpected error"
           schema:
             $ref: "#/definitions/inline_response_default"
-      security:
-      - {}
       x-swagger-router-controller: "SMVUserAuthController"
   /logout:
     get:
@@ -57,7 +53,12 @@ paths:
       operationId: "logoutGET"
       produces:
       - "application/json"
-      parameters: []
+      parameters:
+      - name: "X-AUTH-TOKEN"
+        in: "header"
+        description: "인증 토큰"
+        required: true
+        type: "string"
       responses:
         200:
           description: "로그아웃 성공"
@@ -65,8 +66,6 @@ paths:
           description: "Unexpected error"
           schema:
             $ref: "#/definitions/inline_response_default"
-      security:
-      - api-key-1: []
       x-swagger-router-controller: "SMVUserAuthController"
   /userinfo:
     get:
@@ -76,7 +75,12 @@ paths:
       operationId: "userinfoGET"
       produces:
       - "application/json"
-      parameters: []
+      parameters:
+      - name: "X-AUTH-TOKEN"
+        in: "header"
+        description: "인증 토큰"
+        required: true
+        type: "string"
       responses:
         200:
           description: "인증된 사용자 정보"
@@ -86,15 +90,7 @@ paths:
           description: "Unexpected error"
           schema:
             $ref: "#/definitions/inline_response_default"
-      security:
-      - api-key-1: []
       x-swagger-router-controller: "SMVUserAuthController"
-securityDefinitions:
-  api-key-1:
-    description: ""
-    type: "apiKey"
-    name: "X-AUTH-TOKEN"
-    in: "header"
 definitions:
   UserObject:
     type: "object"
