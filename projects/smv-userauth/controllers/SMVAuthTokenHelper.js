@@ -53,8 +53,6 @@ function generateAuthToken(resultcb) {
     } else {
       // step3. Set Expire
       redisClient.expire(key, EXPIRES_AFTER_SECS, function(error, result) {
-        
-          console.log(result);
         if (error) {
           console.error(error);
           resultcb();  // empty
