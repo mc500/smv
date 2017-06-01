@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: "off" */
+
 'use strict';
 
 var url = require('url');

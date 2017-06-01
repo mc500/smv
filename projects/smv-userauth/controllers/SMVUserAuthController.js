@@ -1,10 +1,14 @@
 'use strict';
 
-var url = require('url'),
-    SMVAuthTokenHelper = require('./SMVAuthTokenHelper');
+const AUTH_TOKEN_KEY = 'X-AUTH-TOKEN';
+
+var SMVAuthTokenHelper = require('./SMVAuthTokenHelper');
 
 function extractAuthToken(req) {
-  var token = req.headers['x-auth-token'];
+  var token = req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()];
+  if (!token) {
+    console.error(`${AUTH_TOKEN_KEY} is not in the header as key`);
+  }
   return token;
 }
 
@@ -15,13 +19,13 @@ module.exports.userinfoGET = function (req, res, next) {
    * returns inline_response_200
    **/
   var example = {
-    "role" : "USER",
-    "serial" : "1234567890",
-    "phone" : "+82-2-1234-0000",
-    "name" : "John Doe",
-    "mobile" : "+82-10-1234-0000",
-    "userid" : "CN=John Doe/OU=ACME/O=IBM",
-    "email" : "john.doe@acme.ibm.com"
+    'role' : 'USER',
+    'serial' : '1234567890',
+    'phone' : '+82-2-1234-0000',
+    'name' : 'John Doe',
+    'mobile' : '+82-10-1234-0000',
+    'userid' : 'CN=John Doe/OU=ACME/O=IBM',
+    'email' : 'john.doe@acme.ibm.com'
   };
 
   var token = extractAuthToken(req);
@@ -71,13 +75,13 @@ module.exports.loginPOST = function (req, res, next) {
   }
 
   var email = args.email.value;
-  var passwd = args.passwd.value
+  var passwd = args.passwd.value;
   if (email === 'john.doe@acme.ibm.com' && passwd === 'passw0rd') {
     SMVAuthTokenHelper.generateAuthToken(function(token) {
       // Set the key of user
       SMVAuthTokenHelper.setAuthTokenValue(token, 'userid', email, function(result){
         if (result) {
-          res.setHeader('X-AUTH-TOKEN', token);
+          res.setHeader(AUTH_TOKEN_KEY, token);
           res.end('OK'); 
         } else {
           // Error 
@@ -103,7 +107,7 @@ module.exports.logoutGET = function (req, res, next) {
    **/
   var token = extractAuthToken(req);
   SMVAuthTokenHelper.invalidateAuthToken(token, function(valid) {
-      if (valid) {
+    if (valid) {
       res.end('OK'); 
     } else {
       res.statusCode = 401;

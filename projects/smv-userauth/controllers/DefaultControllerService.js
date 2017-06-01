@@ -1,3 +1,5 @@
+/*eslint no-unused-vars:off, indent:off, quotes:off, semi:off */
+
 'use strict';
 
 exports.authUserinfoGET = function(args, res, next) {

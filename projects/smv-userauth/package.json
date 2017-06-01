@@ -21,6 +21,7 @@
     "node": "4.x"
   },
   "devDependencies": {
+    "eslint": "^3.19.0",
     "mocha": "^3.4.2",
     "supertest": "^3.0.0"
   }

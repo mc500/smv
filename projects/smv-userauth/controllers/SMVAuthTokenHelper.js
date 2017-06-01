@@ -5,7 +5,7 @@ const REDIS_SERVICE_NAME = 'Compose for Redis-smv';
 const EXPIRES_AFTER_SECS = 3600; // an hour
 
 const appEnv = require('cfenv').getAppEnv();
-const redis = require("redis");
+const redis = require('redis');
 const uuidV4 = require('uuid/v4');
 
 const redisCredentials = appEnv.getServiceCreds(REDIS_SERVICE_NAME);
@@ -27,7 +27,7 @@ if (redisCredentials.uri) {
 
 const redisClient = redis.createClient(redisClientOptions);
 
-redisClient.on('error', function (err) {
+redisClient.on('error', (err) => {
   console.error('error event - ' + redisClient.host + ':' + redisClient.port + ' - ' + err);
 });
 
@@ -43,7 +43,7 @@ function generateAuthToken(resultcb) {
   // step1. Create Random Key
   var token = uuidV4();
 
-  // step2. Set Key
+  // step2. Use the key with hash
   var key = tokenAsKey(token);
   redisClient.hset(key, '_expires', EXPIRES_AFTER_SECS, function(error, result) {
     
@@ -51,7 +51,7 @@ function generateAuthToken(resultcb) {
       console.error('error: '+error);
       resultcb();  // empty
     } else {
-      // step3. Set Expire
+      // step3. Set expiration time
       redisClient.expire(key, EXPIRES_AFTER_SECS, function(error, result) {
         if (error) {
           console.error(error);
@@ -67,7 +67,7 @@ function generateAuthToken(resultcb) {
 function invalidateAuthToken(token, resultcb) {
   var key = tokenAsKey(token);
 
-  redisClient.del(key, function(error, result) {
+  redisClient.del(key, (error, result) => {
     if (error) {
       console.error('error: '+error);
       resultcb();  // empty
@@ -80,7 +80,7 @@ function invalidateAuthToken(token, resultcb) {
 function isValidAuthToken(token, resultcb) {
   var key = tokenAsKey(token);
 
-  redisClient.ttl(key, function(error, result) {
+  redisClient.ttl(key, (error, result) => {
     if (error) {
       console.error('error: '+error);
       resultcb();  // empty
@@ -93,7 +93,7 @@ function isValidAuthToken(token, resultcb) {
 function getAuthTokenValue(token, field, resultcb) {
   var key = tokenAsKey(token);
 
-  redisClient.hget(key, field, function(error, result) {
+  redisClient.hget(key, field, (error, result) => {
     if (error) {
       console.error('error: '+error);
       resultcb();  // empty
@@ -106,7 +106,7 @@ function getAuthTokenValue(token, field, resultcb) {
 function setAuthTokenValue(token, field, value, resultcb) {
   var key = tokenAsKey(token);
 
-  redisClient.hset(key, field, value, function(error, result) {
+  redisClient.hset(key, field, value, (error, result) => {
     if (error) {
       console.error('error: '+error);
       resultcb();  // empty
