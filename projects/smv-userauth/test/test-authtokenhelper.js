@@ -3,7 +3,7 @@
 const TEST_TIMEOUT = 60*1000; // 60 seconds
 
 var assert = require('assert'),
-    SMVAuthTokenHelper = require('../../controllers/SMVAuthTokenHelper');
+    SMVAuthTokenHelper = require('../controllers/SMVAuthTokenHelper');
 
 describe('[SMVAuthTokenHelper Unit Test]', function() {
 

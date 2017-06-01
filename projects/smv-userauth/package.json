@@ -5,8 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "test": "node_modules/.bin/mocha -u exports tests/unit/test-authtokenhelper.js",
-    "test-all": "find ./tests -name 'test-*.js' | xargs node_modules/.bin/mocha -u exports"
+    "test": "mocha"
   },
   "dependencies": {
     "cfenv": "1.0.x",
