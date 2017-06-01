@@ -31,6 +31,7 @@ describe('[SMVAuthTokenHelper Unit Test]', function() {
     });
 
     it('AuthToken validation', function (done) {
+        assert(authtoken);
         SMVAuthTokenHelper.isValidAuthToken(authtoken, function(valid) {
             assert(valid);
 
@@ -47,6 +48,7 @@ describe('[SMVAuthTokenHelper Unit Test]', function() {
     });
 
     it('AuthToken set value', function (done) {
+        assert(authtoken);
         SMVAuthTokenHelper.setAuthTokenValue(authtoken, 'myfield', 'myvalue', function(result) {
             assert(result);
 
@@ -55,6 +57,7 @@ describe('[SMVAuthTokenHelper Unit Test]', function() {
     });
 
     it('AuthToken get value', function (done) {
+        assert(authtoken);
         SMVAuthTokenHelper.getAuthTokenValue(authtoken, 'myfield', function(result) {
             assert(result == 'myvalue');
 
@@ -63,10 +66,12 @@ describe('[SMVAuthTokenHelper Unit Test]', function() {
     });
 
     it('AuthToken invalidate', function (done) {
+        assert(authtoken);
         SMVAuthTokenHelper.invalidateAuthToken(authtoken, function(valid) {
             assert(valid);
 
             SMVAuthTokenHelper.isValidAuthToken(authtoken, function(valid) {
+                authtoken = undefined;
                 assert(!valid);
 
                 done();
