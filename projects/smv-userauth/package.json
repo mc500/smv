@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "./node_modules/.bin/eslint app.js controller test"
   },
   "dependencies": {
     "cfenv": "1.0.x",
