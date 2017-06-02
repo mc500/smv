@@ -2,7 +2,7 @@
 
 const REDIS_SERVICE_NAME = 'Compose for Redis-smv';
 // const REDIS_SERVICE_NAME = 'Redis Cloud-smv';
-const EXPIRES_AFTER_SECS = 3600; // an hour
+const EXPIRES_IN_SECS = 3600; // an hour
 
 const appEnv = require('cfenv').getAppEnv();
 const redis = require('redis');
@@ -45,14 +45,14 @@ function generateAuthToken(resultcb) {
 
   // step2. Use the key with hash
   var key = tokenAsKey(token);
-  redisClient.hset(key, '_expires', EXPIRES_AFTER_SECS, function(error, result) {
+  redisClient.hset(key, '_expires_in', EXPIRES_IN_SECS, function(error, result) {
     
     if (error) {
       console.error('error: '+error);
       resultcb();  // empty
     } else {
       // step3. Set expiration time
-      redisClient.expire(key, EXPIRES_AFTER_SECS, function(error, result) {
+      redisClient.expire(key, EXPIRES_IN_SECS, function(error, result) {
         if (error) {
           console.error(error);
           resultcb();  // empty
