@@ -34,7 +34,7 @@ redisClient.on('error', (err) => {
 // ----------------------------------------------------------------------------
 
 function tokenAsKey(token) {
-  return token.replace(/-/gi, '_'); // replace all of '-' to '_'
+  return token ? token.replace(/-/gi, '_') : undefined; // replace all of '-' to '_'
 }
 
 // ----------------------------------------------------------------------------
