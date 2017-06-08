@@ -45,8 +45,13 @@ function generateAuthToken(resultcb) {
 
   // step2. Use the key with hash
   var key = tokenAsKey(token);
+  if (!key) {    
+    console.error('token is empty');
+    resultcb();  // empty
+    return;
+  }
+  
   redisClient.hset(key, '_expires_in', EXPIRES_IN_SECS, function(error, result) {
-    
     if (error) {
       console.error('error: '+error);
       resultcb();  // empty
@@ -66,6 +71,11 @@ function generateAuthToken(resultcb) {
 
 function invalidateAuthToken(token, resultcb) {
   var key = tokenAsKey(token);
+  if (!key) {    
+    console.error('token is empty');
+    resultcb();  // empty
+    return;
+  }
 
   redisClient.del(key, (error, result) => {
     if (error) {
@@ -79,6 +89,11 @@ function invalidateAuthToken(token, resultcb) {
 
 function isValidAuthToken(token, resultcb) {
   var key = tokenAsKey(token);
+  if (!key) {    
+    console.error('token is empty');
+    resultcb();  // empty
+    return;
+  }
 
   redisClient.ttl(key, (error, result) => {
     if (error) {
@@ -92,6 +107,11 @@ function isValidAuthToken(token, resultcb) {
 
 function getAuthTokenValue(token, field, resultcb) {
   var key = tokenAsKey(token);
+  if (!key) {    
+    console.error('token is empty');
+    resultcb();  // empty
+    return;
+  }
 
   redisClient.hget(key, field, (error, result) => {
     if (error) {
@@ -105,6 +125,11 @@ function getAuthTokenValue(token, field, resultcb) {
 
 function setAuthTokenValue(token, field, value, resultcb) {
   var key = tokenAsKey(token);
+  if (!key) {    
+    console.error('token is empty');
+    resultcb();  // empty
+    return;
+  }
 
   redisClient.hset(key, field, value, (error, result) => {
     if (error) {
