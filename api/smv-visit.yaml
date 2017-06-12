@@ -17,6 +17,11 @@ paths:
       tags:
         - 방문정보
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: body
           in: body
           required: true
@@ -46,6 +51,11 @@ paths:
       tags:
         - 방문정보
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: id
           description: 방문정보 ID
           in: path
@@ -65,6 +75,11 @@ paths:
       tags:
         - 방문정보
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: id
           description: 방문정보 ID
           in: path
@@ -87,6 +102,11 @@ paths:
       tags:
         - 방문정보
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: id
           description: 방문정보 ID
           in: path
@@ -105,6 +125,11 @@ paths:
       tags:
         - 방문정보
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: date
           description: '방문일시 (ex.1493349000000, 밀리초, 브라우저 시간 기준)'
           in: query
@@ -156,15 +181,15 @@ definitions:
       id:
         type: string
         description: 방문정보 ID
-        example: 10103023023010
+        example: '10103023023010'
       date:
         type: string
-        description: 방문일시
+        description: '방문일시, 날짜 형식'
         example: '2017-04-28 12:10:00 GMT+09:00'
       updated:
         type: integer
         format: int64
-        description: 정보 갱신 Timestamp(밀리초)
+        description: '정보 갱신 Timestamp(밀리초), 자동생성'
         example: 1493349000000
       visitor:
         $ref: '#/definitions/VisitorInfo'
@@ -295,11 +320,3 @@ definitions:
         example: 500
 consumes:
   - application/json
-securityDefinitions:
-  api-key-1:
-    type: apiKey
-    description: ''
-    in: header
-    name: X-AUTH-TOKEN
-security:
-  - api-key-1: []
