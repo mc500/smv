@@ -1,0 +1,12 @@
+applications:
+- path: .
+  memory: 256M
+  instances: 1
+  domain: mybluemix.net
+  name: smv-badge
+  host: smv-badge
+  disk_quota: 1024M
+  services:
+  - Redis Cloud-smv
+  - Compose for Redis-smv
+  - smv-ui-app-cloudantNoSQLDB
