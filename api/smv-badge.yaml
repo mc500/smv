@@ -110,7 +110,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /list:
+  /search:
     get:
       summary: 주어진 조건을 만족하는 임시 출입증 정보 조회
       tags:
@@ -171,6 +171,11 @@ definitions:
         type: string
         description: 임시 출입증 번호
         example: 1
+      updated:
+        type: integer
+        format: int64
+        description: '정보 갱신 Timestamp(밀리초), 자동생성'
+        example: 1493349000000
   PagingInfo:
     type: object
     properties:
