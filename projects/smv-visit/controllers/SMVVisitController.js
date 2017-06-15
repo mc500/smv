@@ -36,10 +36,8 @@ function cleanseVisitObject(visit) {
   //var rev = visit._rev || visit.rev;
   //var type = visit.type;
   
-  var json = Object.assign(visit, {
-    id: id
-  });
-
+  var json = Object.assign({}, visit);
+  json['id'] = id;
   json['_id'] = undefined;
   json['_rev'] = undefined;
   json['type'] = undefined;
@@ -53,7 +51,7 @@ function newVisit(req, res) {
   //console.log(req.body);
   console.log(`newVisit: visit id ${req.body.id} for ${req.body.visitor.name}`);
 
-  var json = req.body;
+  var json = Object.assign({}, req.body);
   if (json.hasOwnProperty('id')) {
     json['_id'] = String(json.id);
     json['id'] = undefined;
