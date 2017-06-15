@@ -2,6 +2,7 @@
 
 const BASE_PATH = '/api/smv/v1/visit';
 const AUTH_TOKEN_KEY = 'X-AUTH-TOKEN';
+const DOC_TYPE = 'BADGE';
 const UPDATABLE_PROPS = ['visitor', 'escort', 'agreement', 'badge'];
 
 var SMVAuthTokenHelper = require('./SMVAuthTokenHelper'),
@@ -56,7 +57,7 @@ function newVisit(req, res) {
     json['_id'] = String(json.id);
     json['id'] = undefined;
   }
-  json['type'] = 'VISIT';
+  json['type'] = DOC_TYPE;
   json['date'] = new Date(json.date).getTime();
   json['updated'] = new Date().getTime();
 
@@ -130,6 +131,47 @@ function updateVisit(req, res) {
       });
     }
   });
+}
+
+function updateVisit_update_handler_test(req, res) {
+  var docid = req.params.id;
+  
+  console.log(`updateVisit: visit id ${docid}`);
+
+  mydb.get(docid, function(err, doc) {
+    if (err) {
+      console.error(err);
+      // Error 
+      res.statusCode = 500;
+      res.end('Internel Server Error');
+    } else {
+      var jsondoc = Object.assign({}, doc);
+      //console.log(`key:${key}`);
+      // Select field to update
+      for (var idx in UPDATABLE_PROPS) {
+        var key = UPDATABLE_PROPS[idx];
+        console.log(`key:${key}`);
+        if (req.body.hasOwnProperty(key)) {
+          jsondoc[key] = Object.assign(jsondoc[key], req.body[key]);
+        }
+      }
+
+      mydb.atomic('smv-visit', 'timestamp', docid, jsondoc, function(err, doc) {
+        if (err) {
+          console.error(err);
+          // Error 
+          res.statusCode = 500;
+          res.end('Internel Server Error');
+        } else {
+          // new jsondoc is saved well
+          //res.json(cleanseVisitObject(jsondoc));
+          res.json(doc);
+          res.end();
+        }
+      });
+    }
+  });
+
 }
 
 function deleteVisit(req, res) {
@@ -223,7 +265,7 @@ function searchVisits(req, res) {
 
   var selector = {
     '$and':[
-      {'type': 'VISIT'}
+      {'type': DOC_TYPE}
     ]
   };
   var queryIndex;
