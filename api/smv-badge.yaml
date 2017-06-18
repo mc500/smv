@@ -17,6 +17,11 @@ paths:
       tags:
         - 임시출입증
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: body
           in: body
           required: true
@@ -57,6 +62,11 @@ paths:
       tags:
         - 임시출입증
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: id
           description: 임시출입증 ID
           in: path
@@ -76,6 +86,11 @@ paths:
       tags:
         - 임시출입증
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: id
           description: 임시출입증 ID
           in: path
@@ -98,6 +113,11 @@ paths:
       tags:
         - 임시출입증
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: id
           description: 임시 출입증 ID
           in: path
@@ -116,6 +136,11 @@ paths:
       tags:
         - 임시출입증
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: type
           description: 검색 종류
           in: query
@@ -209,11 +234,3 @@ definitions:
         example: 500
 consumes:
   - application/json
-securityDefinitions:
-  api-key-1:
-    type: apiKey
-    description: ''
-    in: header
-    name: X-AUTH-TOKEN
-security:
-  - api-key-1: []
