@@ -9,3 +9,4 @@ applications:
   services:
   - Redis Cloud-smv
   - Compose for Redis-smv
+  - smv-ui-app-cloudantNoSQLDB

@@ -17,6 +17,11 @@ paths:
       tags:
         - 사용자정보
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: id
           description: 사용자 ID
           in: path
@@ -37,6 +42,11 @@ paths:
       tags:
         - 사용자정보
       parameters:
+        - name: X-AUTH-TOKEN
+          description: 인증 토큰
+          in: header
+          type: string
+          required: true
         - name: id
           description: 사용자 ID
           in: path
@@ -64,7 +74,7 @@ definitions:
       serial:
         type: string
         description: 사용자 사번
-        example: 1234567890
+        example: '1234567890'
       name:
         type: string
         description: 사용자 성명
@@ -103,11 +113,3 @@ definitions:
         example: 500
 consumes:
   - application/json
-securityDefinitions:
-  api-key-1:
-    type: apiKey
-    description: ''
-    in: header
-    name: X-AUTH-TOKEN
-security:
-  - api-key-1: []
