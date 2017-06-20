@@ -7,7 +7,7 @@ schemes:
   - http
   - https
 host: 'localhost:6003'
-basePath: /api/smv/v1/user
+basePath: /api/smv/v1/userinfo
 produces:
   - application/json
 paths:
