@@ -1,0 +1,12 @@
+applications:
+- path: .
+  memory: 512M
+  instances: 1
+  domain: mybluemix.net
+  name: smv-ui-app
+  host: smv-ui-app
+  disk_quota: 1024M
+  services:
+  - Redis Cloud-smv
+  - Compose for Redis-smv
+  - smv-ui-app-cloudantNoSQLDB
