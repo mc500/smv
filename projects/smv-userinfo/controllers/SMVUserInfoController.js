@@ -37,20 +37,20 @@ var USER_INFO_SAMPLE = [{
   'mobile': '+82-10-1234-0001',
   'role': 'ESCORT'
 }, {
-  'userid': 'CN=John Doe/OU=ACME/O=IBM',
-  'name': 'John Doe',
-  'email': 'john.doe@acme.ibm.com',
+  'userid': 'CN=Sally Doe/OU=ACME/O=IBM',
+  'name': 'Sally Doe',
+  'email': 'sally.doe@acme.ibm.com',
   'dept': 'Client Innovation Lab',
-  'phone': '+82-2-1234-0002',
-  'mobile': '+82-10-1234-0002',
+  'phone': '+82-2-1234-1002',
+  'mobile': '+82-10-1234-1002',
   'role': 'RECEPTION'
 }, {
-  'userid': 'CN=John Doe/OU=ACME/O=IBM',
-  'name': 'John Doe',
-  'email': 'john.doe@acme.ibm.com',
+  'userid': 'CN=Lisa Doe/OU=ACME/O=IBM',
+  'name': 'Lisa Doe',
+  'email': 'lisa.doe@acme.ibm.com',
   'dept': 'Client Innovation Lab',
-  'phone': '+82-2-1234-0003',
-  'mobile': '+82-10-1234-0003',
+  'phone': '+82-2-1234-9003',
+  'mobile': '+82-10-1234-9003',
   'role': 'ADMIN'
 }];
 
