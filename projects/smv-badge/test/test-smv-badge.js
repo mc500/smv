@@ -80,7 +80,7 @@ describe('[SMVBadge API Test]', function() {
     describe('POST /', function() {
       it('returns status code 401', function(done) {
         request.post(BASE_PATH, function(error, response, body) {
-          assert.equal(401, response.statusCode);
+          assert.equal(response.statusCode, 401);
           done();
         });
       });
@@ -95,7 +95,7 @@ describe('[SMVBadge API Test]', function() {
           headers: buildAuthHeaders(authtoken),
           json: badgeObjectSample
         }, function(error, response, body) {
-          assert.equal(200, response.statusCode);
+          assert.equal(response.statusCode, 200);
 
           testid = body.id;
 
@@ -109,7 +109,7 @@ describe('[SMVBadge API Test]', function() {
     describe('GET /{id}', function() {
       it('returns status code 401', function(done) {
         request.get(`${BASE_PATH}/${testid}`, function(error, response, body) {
-          assert.equal(401, response.statusCode);
+          assert.equal(response.statusCode, 401);
           done();
         });
       });
@@ -120,7 +120,7 @@ describe('[SMVBadge API Test]', function() {
           headers: buildAuthHeaders(authtoken)
         }, function(error, response, body) {
           //console.log(body);
-          assert.equal(200, response.statusCode);
+          assert.equal(response.statusCode, 200);
           done();
         });
       });
@@ -129,7 +129,7 @@ describe('[SMVBadge API Test]', function() {
     describe('PUT /{id}', function() {
       it('returns status code 401', function(done) {
         request.put(`${BASE_PATH}/${testid}`, function(error, response, body) {
-          assert.equal(401, response.statusCode);
+          assert.equal(response.statusCode, 401);
           done();
         });
       });
@@ -143,7 +143,7 @@ describe('[SMVBadge API Test]', function() {
           }
         }, function(error, response, body) {
           // console.log(body);
-          assert.equal(200, response.statusCode);
+          assert.equal(response.statusCode, 200);
           assert.equal(body.number, 100);
           //assert.notEqual(body.updated, undefined);
           done();
@@ -154,7 +154,7 @@ describe('[SMVBadge API Test]', function() {
     describe('DELETE /{id}', function() {
       it('returns status code 401', function(done) {
         request.delete(`${BASE_PATH}/${testid}`, function(error, response, body) {
-          assert.equal(401, response.statusCode);
+          assert.equal(response.statusCode, 401);
           done();
         });
       });
@@ -164,7 +164,7 @@ describe('[SMVBadge API Test]', function() {
           url: `${BASE_PATH}/${testid}`,
           headers: buildAuthHeaders(authtoken)
         }, function(error, response, body) {
-          assert.equal(200, response.statusCode);
+          assert.equal(response.statusCode, 200);
           done();
         });
       });
@@ -174,7 +174,7 @@ describe('[SMVBadge API Test]', function() {
   describe.only('GET /search', function() {
     it('returns status code 401', function(done) {
       request.get(`${BASE_PATH}/search`, function(error, response, body) {
-        assert.equal(401, response.statusCode);
+        assert.equal(response.statusCode, 401);
         done();
       });
     });
@@ -195,7 +195,7 @@ describe('[SMVBadge API Test]', function() {
           headers: buildAuthHeaders(authtoken),
           json: badgeObjectSample
         }, function(error, response, body) {
-          assert.equal(200, response.statusCode);
+          assert.equal(response.statusCode, 200);
           if (++counter == 3) {
             done();
           }
@@ -212,7 +212,7 @@ describe('[SMVBadge API Test]', function() {
           url: `${BASE_PATH}/searchtest${idx}`,
           headers: buildAuthHeaders(authtoken)
         }, function(error, response, body) {
-          assert.equal(200, response.statusCode);
+          assert.equal(response.statusCode, 200);
           if (++counter == 3) {
             done();
           }
@@ -229,7 +229,7 @@ describe('[SMVBadge API Test]', function() {
           keyword: 'janess'
         }
       }, function(error, response, body) {
-        assert.equal(200, response.statusCode);
+        assert.equal(response.statusCode, 200);
         var json = JSON.parse(body);
         assert.equal(json.result.length, 0);
         done();
@@ -245,11 +245,11 @@ describe('[SMVBadge API Test]', function() {
           keyword: BADGE_SAMPLE[0].type
         }
       }, function(error, response, body) {
-        assert.equal(200, response.statusCode);
+        assert.equal(response.statusCode, 200);
         var json = JSON.parse(body);
         //console.log(json);
         assert.equal(json.result.length, 3);
-        assert.equal(BADGE_SAMPLE[0].type, json.result[0].type);
+        assert.equal(json.result[0].type, BADGE_SAMPLE[0].type);
         done();
       });
     });
@@ -263,11 +263,11 @@ describe('[SMVBadge API Test]', function() {
           keyword: BADGE_SAMPLE[1].number
         }
       }, function(error, response, body) {
-        assert.equal(200, response.statusCode);
+        assert.equal(response.statusCode, 200);
         var json = JSON.parse(body);
         //console.log(json);
         assert.equal(json.result.length, 1);
-        assert.equal(BADGE_SAMPLE[1].number, json.result[0].number);
+        assert.equal(json.result[0].number, BADGE_SAMPLE[1].number);
         done();
       });
     });
@@ -281,7 +281,7 @@ describe('[SMVBadge API Test]', function() {
           //page: 0
         }
       }, function(error, response, body) {
-        assert.equal(200, response.statusCode);
+        assert.equal(response.statusCode, 200);
         var json = JSON.parse(body);
         assert.notEqual(json.result.length, 0);
         done();
@@ -297,11 +297,11 @@ describe('[SMVBadge API Test]', function() {
           //page: 0
         }
       }, function(error, response, body) {
-        assert.equal(200, response.statusCode);
+        assert.equal(response.statusCode, 200);
         var json = JSON.parse(body);
         assert.equal(json.result.length, 1);
         // console.log(json);
-        assert.equal(BADGE_SAMPLE[0].number, json.result[0].number);
+        assert.equal(json.result[0].number, BADGE_SAMPLE[0].number);
         done();
       });
     });
@@ -315,10 +315,10 @@ describe('[SMVBadge API Test]', function() {
           page: 2
         }
       }, function(error, response, body) {
-        assert.equal(200, response.statusCode);
+        assert.equal(response.statusCode, 200);
         var json = JSON.parse(body);
         assert.equal(json.result.length, 1);
-        assert.equal(BADGE_SAMPLE[2].number, json.result[0].number);
+        assert.equal(json.result[0].number, BADGE_SAMPLE[2].number);
         done();
       });
     });
@@ -332,7 +332,7 @@ describe('[SMVBadge API Test]', function() {
           page: 10
         }
       }, function(error, response, body) {
-        assert.equal(200, response.statusCode);
+        assert.equal(response.statusCode, 200);
         var json = JSON.parse(body);
         assert.equal(json.result.length, 1);
         done();
@@ -348,7 +348,7 @@ describe('[SMVBadge API Test]', function() {
           page: 10
         }
       }, function(error, response, body) {
-        assert.equal(400, response.statusCode);
+        assert.equal(response.statusCode, 400);
         done();
       });
     });
@@ -362,7 +362,7 @@ describe('[SMVBadge API Test]', function() {
           page: -1
         }
       }, function(error, response, body) {
-        assert.equal(400, response.statusCode);
+        assert.equal(response.statusCode, 400);
         done();
       });
     });

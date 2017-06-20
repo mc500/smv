@@ -1,6 +1,6 @@
 'use strict';
 
-const BASE_PATH = '/api/smv/v1/badge';
+const BASE_PATH = '/api/smv/v1/userinfo';
 const AUTH_TOKEN_KEY = 'X-AUTH-TOKEN';
 
 var SMVAuthTokenHelper = require('./SMVAuthTokenHelper');
