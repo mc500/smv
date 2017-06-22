@@ -8,8 +8,49 @@
 	<link rel="stylesheet" href="/style/style.css" />
 </head>
 <body>
+	<div>
+		<%- include('../userinfo.html'); %>
+	</div>
 	<div class = "container">
 		방문자 상세 정보
+		<table>
+			<tbody>
+				<tr>
+					<td>일시</td>
+					<td><input id="date" type="date"></td>
+					<td>임직원</td>
+					<td><input id="escort"></td>
+				</tr>
+				<tr>
+					<td>이름</td>
+					<td><input id="name"></td>
+					<td>연락처</td>
+					<td><input id="escort"></td>
+				</tr>
+				<tr>
+					<td>직위</td>
+					<td><input id="title"></td>
+					<td>부서</td>
+					<td><input id="escort"></td>
+				</tr>
+				<tr>
+					<td>연락처</td>
+					<td><input id="contact"></td>
+					<td>카드번호</td>
+					<td><input id="cardnumber"></td>
+				</tr>
+				<tr>
+					<td>회사</td>
+					<td><input id="company"></td>
+					<td>보안서명</td>
+					<td><span><a onclick="alert('대기중');">대기</a></span></td>
+				</tr>
+			</tbody>
+		</table>
+		<div>
+			<button id="update" onclick="alert('변경');">변경</button>
+			<button id="cancel" onclick="history.back(1);">취소</button>
+		</div>
 	</div>
 </body>
 </html>

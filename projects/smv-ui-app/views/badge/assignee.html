@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>방문자 등록</title>
+	<title>발급자 상세 정보</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
 	<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -12,40 +12,39 @@
 		<%- include('../userinfo.html'); %>
 	</div>
 	<div class = "container">
-		방문자 등록
+		발급자 상세 정보
 		<table>
 			<tbody>
 				<tr>
 					<td>일시</td>
-					<td><input id="date" type="date" value="<%=today%>"></td>
+					<td><span id="date"></span></td>
 					<td>임직원</td>
-					<td><input id="escort"></td>
+					<td><span id="escort"></span></td>
 				</tr>
 				<tr>
 					<td>이름</td>
-					<td><input id="name"></td>
+					<td><span id="name"></span></td>
 					<td>연락처</td>
-					<td><input id="escort"></td>
+					<td><span id="escort"></span></td>
 				</tr>
 				<tr>
 					<td>직위</td>
-					<td><input id="title"></td>
+					<td><span id="title"></span></td>
 					<td>부서</td>
-					<td><input id="escort"></td>
+					<td><span id="escort"></span></td>
 				</tr>
 				<tr>
 					<td>연락처</td>
-					<td><input id="contact"></td>
+					<td><span id="contact"></span></td>
 				</tr>
 				<tr>
 					<td>회사</td>
-					<td><input id="company"></td>
+					<td><span id="company"></span></td>
 				</tr>
 			</tbody>
 		</table>
 		<div>
-			<button id="register" onclick="alert('등록');">등록</button>
-			<button id="cancel" onclick="history.back(1);">취소</button>
+			<button onclick="history.back(1);">확인</button>
 		</div>
 	</div>
 </body>

@@ -30,12 +30,30 @@ function authenticatedFilter(req, res, next) {
   });
 }
 
+function getTodayString() {
+  var today = new Date();
+  var year = today.getFullYear();
+  var month = today.getMonth()+1;
+  var day = today.getDate();
+
+  if (month < 10) {
+    month = `0${month}`;
+  }
+  if (day < 10) {
+    day = `0${day}`;
+  }
+
+  return `${year}-${month}-${day}`;
+}
+
 function login(req, res) {
   res.render('login.html', {});
 }
 
 function register(req, res) {
-  res.render('visiting/register.html', {});
+  res.render('visiting/register.html', {
+    today: getTodayString()
+  });
 }
 
 function detail(req, res) {
@@ -47,7 +65,9 @@ function detail(req, res) {
 function visitinglist(req, res) {
   console.log(`visiting list`);
 
-  res.render('visiting/list.html', {});
+  res.render('visiting/list.html', {
+    today: getTodayString()
+  });
 }
 
 function confirm(req, res) {
@@ -66,6 +86,10 @@ function badgelist(req, res) {
   res.render('badge/list.html', {});
 }
 
+function badgeassignee(req, res) {
+  res.render('badge/assignee.html', {}); 
+}
+
 exports.init = function(app) {
   app.get('/', authenticatedFilter, function(req, res) {
   	// redirect to visiting list
@@ -78,4 +102,5 @@ exports.init = function(app) {
   app.get(BASE_PATH + '/visiting/confirm', authenticatedFilter, confirm);
   app.get(BASE_PATH + '/visiting/agreement', authenticatedFilter, agreement);
   app.get(BASE_PATH + '/badge/list', authenticatedFilter, badgelist);
+  app.get(BASE_PATH + '/badge/assignee', authenticatedFilter, badgeassignee);
 };

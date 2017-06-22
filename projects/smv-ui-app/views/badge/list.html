@@ -8,8 +8,56 @@
 	<link rel="stylesheet" href="/style/style.css" />
 </head>
 <body>
+	<div>
+		<%- include('../userinfo.html'); %>
+	</div>
 	<div class = "container">
 		임시 출입 카드
+		<div>
+			<input id="date" type="date" value="<%=today%>">
+			<input id="search" placeholder="검색내용">
+			<select id="type">
+				<option value="NONE" selected disabled>선택하세요</option>
+				<option value="NAME">방문자명</option>
+				<option value="EMAIL">이메일</option>
+				<option value="CONTACT">연락처</option>
+			</select>
+			<button id="search">검색</button>
+			<button id="register" onclick="window.location='/visiting/register';">방문등록</button>
+		</div>
+		<table>
+			<tbody>
+				<tr>
+					<th>종류</th>
+					<th>번호</th>
+					<th>상태</th>
+					<th>일시</th>
+					<th>수령자</th>
+					<th>연락처</th>
+					<th>임직원</th>
+					<th>연락처</th>
+					<th>부서</th>
+				</tr>
+				<tr>
+					<td>임시</td>
+					<td>01</td>
+					<td>발급</td>
+					<td>2017-06-11</td>
+					<td>홍길동</td>
+					<td>010-9999-1111</td>
+					<td>John Doe</td>
+					<td>+82-2-1234-0000</td>
+					<td>Client Innovation Lab</td>
+				</tr>
+			</tbody>
+		</table>
+		<div id="paging">
+			<ul>
+				<li> 1 </li>
+				<li> 2 </li>
+				<li> 3 </li>
+			</ul>
+		</div>
 	</div>
 </body>
 </html>

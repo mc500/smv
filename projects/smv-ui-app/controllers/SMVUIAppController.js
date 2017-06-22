@@ -45,8 +45,9 @@ function login(req, res, next) {
       res.redirect(BASE_PATH + '/login?error=authtoken is empty');
       return; 
     }
+
     res.cookie(AUTH_TOKEN_KEY, authtoken, {
-      maxAge: 10000
+      maxAge: 30*60*1000 // 30 mins
     });
       
     // Redirect to visiting list
