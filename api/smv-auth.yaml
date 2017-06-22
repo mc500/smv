@@ -36,6 +36,8 @@ paths:
             'X-AUTH-TOKEN':
               description: Authentication Token
               type: string
+          schema:
+            $ref: '#/definitions/UserObject'
         default:
           description: Unexpected error
           schema:

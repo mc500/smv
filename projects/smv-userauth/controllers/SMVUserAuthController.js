@@ -4,6 +4,16 @@ const AUTH_TOKEN_KEY = 'X-AUTH-TOKEN';
 
 var SMVAuthTokenHelper = require('./SMVAuthTokenHelper');
 
+var exampleUser = {
+  'role' : 'USER',
+  'serial' : '1234567890',
+  'phone' : '+82-2-1234-0000',
+  'name' : 'John Doe',
+  'mobile' : '+82-10-1234-0000',
+  'userid' : 'CN=John Doe/OU=ACME/O=IBM',
+  'email' : 'john.doe@acme.ibm.com'
+};
+
 function extractAuthToken(req) {
   var token = req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()];
   if (!token) {
@@ -18,16 +28,6 @@ module.exports.userinfoGET = function (req, res, next) {
    *
    * returns inline_response_200
    **/
-  var example = {
-    'role' : 'USER',
-    'serial' : '1234567890',
-    'phone' : '+82-2-1234-0000',
-    'name' : 'John Doe',
-    'mobile' : '+82-10-1234-0000',
-    'userid' : 'CN=John Doe/OU=ACME/O=IBM',
-    'email' : 'john.doe@acme.ibm.com'
-  };
-
   var token = extractAuthToken(req);
   SMVAuthTokenHelper.isValidAuthToken(token, function(valid) {
     if (valid) {
@@ -35,7 +35,7 @@ module.exports.userinfoGET = function (req, res, next) {
       SMVAuthTokenHelper.getAuthTokenValue(token, 'userid', function(result){
         if (result && result == example.email) {
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(example));
+          res.end(JSON.stringify(exampleUser));
           res.end(); 
         } else {
           // Error 
@@ -82,7 +82,8 @@ module.exports.loginPOST = function (req, res, next) {
       SMVAuthTokenHelper.setAuthTokenValue(token, 'userid', email, function(result){
         if (result) {
           res.setHeader(AUTH_TOKEN_KEY, token);
-          res.end('OK'); 
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(exampleUser));
         } else {
           // Error 
           res.statusCode = 500;
