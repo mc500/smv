@@ -3,11 +3,11 @@
  */
 
 var express = require('express'),
-    routes = require('./routes'),
-    user = require('./routes/user'),
-    http = require('http'),
-    path = require('path'),
-    fs = require('fs');
+  routes = require('./routes'),
+  user = require('./routes/user'),
+  http = require('http'),
+  path = require('path'),
+  fs = require('fs');
 
 var app = express();
 
@@ -18,14 +18,14 @@ var cloudant;
 var fileToUpload;
 
 var dbCredentials = {
-    dbName: 'my_sample_db'
+  dbName: 'my_sample_db'
 };
 
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var logger = require('morgan');
 var errorHandler = require('errorhandler');
-var multipart = require('connect-multiparty')
+var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 
 // all environments
@@ -73,7 +73,7 @@ function initDBConnection() {
         // Alternately you could point to a local database here instead of a
         // Bluemix service.
         // url will be in this format: https://username:password@xxxxxxxxx-bluemix.cloudant.com
-        dbCredentials.url = getDBCredentialsUrl(fs.readFileSync("vcap-local.json", "utf-8"));
+        dbCredentials.url = getDBCredentialsUrl(fs.readFileSync('vcap-local.json', 'utf-8'));
     }
 
     cloudant = require('cloudant')(dbCredentials.url);
@@ -153,7 +153,7 @@ app.get('/api/favorites/attach', function(request, response) {
         }
 
         response.status(200);
-        response.setHeader("Content-Disposition", 'inline; filename="' + key + '"');
+        response.setHeader('Content-Disposition', 'inline; filename=\'' + key + '\'');
         response.write(body);
         response.end();
         return;
@@ -162,7 +162,7 @@ app.get('/api/favorites/attach', function(request, response) {
 
 app.post('/api/favorites/attach', multipartMiddleware, function(request, response) {
 
-    console.log("Upload File Invoked..");
+    console.log('Upload File Invoked..');
     console.log('Request: ' + JSON.stringify(request.headers));
 
     var id;
@@ -204,13 +204,13 @@ app.post('/api/favorites/attach', multipartMiddleware, function(request, respons
                                     for (var attachment in doc._attachments) {
                                         if (attachment == value) {
                                             attachData = {
-                                                "key": attachment,
-                                                "type": file.type
+                                                'key': attachment,
+                                                'type': file.type
                                             };
                                         } else {
                                             attachData = {
-                                                "key": attachment,
-                                                "type": doc._attachments[attachment]['content_type']
+                                                'key': attachment,
+                                                'type': doc._attachments[attachment]['content_type']
                                             };
                                         }
                                         attachements.push(attachData);
@@ -251,7 +251,7 @@ app.post('/api/favorites/attach', multipartMiddleware, function(request, respons
                 } else {
 
                     existingdoc = doc;
-                    console.log("New doc created ..");
+                    console.log('New doc created ..');
                     console.log(existingdoc);
                     insertAttachment(file, existingdoc.id, existingdoc.rev, name, value, response);
 
@@ -270,9 +270,9 @@ app.post('/api/favorites/attach', multipartMiddleware, function(request, respons
 
 app.post('/api/favorites', function(request, response) {
 
-    console.log("Create Invoked..");
-    console.log("Name: " + request.body.name);
-    console.log("Value: " + request.body.value);
+    console.log('Create Invoked..');
+    console.log('Name: ' + request.body.name);
+    console.log('Value: ' + request.body.value);
 
     // var id = request.body.id;
     var name = sanitizeInput(request.body.name);
@@ -284,11 +284,11 @@ app.post('/api/favorites', function(request, response) {
 
 app.delete('/api/favorites', function(request, response) {
 
-    console.log("Delete Invoked..");
+    console.log('Delete Invoked..');
     var id = request.query.id;
     // var rev = request.query.rev; // Rev can be fetched from request. if
     // needed, send the rev from client
-    console.log("Removing document of ID: " + id);
+    console.log('Removing document of ID: ' + id);
     console.log('Request Query: ' + JSON.stringify(request.query));
 
     db.get(id, {
@@ -311,13 +311,13 @@ app.delete('/api/favorites', function(request, response) {
 
 app.put('/api/favorites', function(request, response) {
 
-    console.log("Update Invoked..");
+    console.log('Update Invoked..');
 
     var id = request.body.id;
     var name = sanitizeInput(request.body.name);
     var value = sanitizeInput(request.body.value);
 
-    console.log("ID: " + id);
+    console.log('ID: ' + id);
 
     db.get(id, {
         revs_info: true
@@ -339,7 +339,7 @@ app.put('/api/favorites', function(request, response) {
 
 app.get('/api/favorites', function(request, response) {
 
-    console.log("Get method invoked.. ")
+    console.log('Get method invoked.. ')
 
     db = cloudant.use(dbCredentials.dbName);
     var docList = [];
@@ -388,11 +388,11 @@ app.get('/api/favorites', function(request, response) {
 
                                     if (doc['_attachments'][attribute] && doc['_attachments'][attribute]['content_type']) {
                                         attachments.push({
-                                            "key": attribute,
-                                            "type": doc['_attachments'][attribute]['content_type']
+                                            'key': attribute,
+                                            'type': doc['_attachments'][attribute]['content_type']
                                         });
                                     }
-                                    console.log(attribute + ": " + JSON.stringify(doc['_attachments'][attribute]));
+                                    console.log(attribute + ': ' + JSON.stringify(doc['_attachments'][attribute]));
                                 }
                                 var responseData = createResponseData(
                                     doc._id,
