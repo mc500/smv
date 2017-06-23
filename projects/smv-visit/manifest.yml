@@ -10,3 +10,5 @@ applications:
   - Redis Cloud-smv
   - Compose for Redis-smv
   - smv-ui-app-cloudantNoSQLDB
+env:
+  SMV_USERAUTH_BASE_URL: http://smv-userauth.mybluemix.net
