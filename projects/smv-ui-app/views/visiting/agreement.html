@@ -2,14 +2,23 @@
 <html>
 <head>
 	<title>보안 서약 정보 동의</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<link rel="stylesheet" href="/style/style.css" />
+	<%- include('../common-head.html'); %>
 </head>
 <body>
-	<div class = "container">
-		보안 서약 정보 동의
+	<%- include('../common-header.html'); %>
+	<div class = "container visiting agreement">
+		보안 서약 및 개인 정보 수집 동의 안내
+		<div class="agreement">
+			블라 불라 블라
+		</div>
+		<input name="agree" id="agree" type="checkbox">내용을 확인하였으며 위의 내용에 동의 합니다.<br>
+		<div>
+			날짜 : <%=today%>, 성명 : <span>홍길동</span> 
+			<button id="confirm" onclick="alert('확인');">확인</button>
+		</div>
+
 	</div>
+	<script type="text/javascript" src="scripts/visiting/agreement.js"></script>
+	<%- include('../common-footer.html'); %>
 </body>
 </html>

@@ -2,16 +2,11 @@
 <html>
 <head>
 	<title>발급자 상세 정보</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<link rel="stylesheet" href="/style/style.css" />
+	<%- include('../common-head.html'); %>
 </head>
 <body>
-	<div>
-		<%- include('../userinfo.html'); %>
-	</div>
-	<div class = "container">
+	<%- include('../common-header.html'); %>
+	<div class = "container badge assignee">
 		발급자 상세 정보
 		<table>
 			<tbody>
@@ -47,5 +42,7 @@
 			<button onclick="history.back(1);">확인</button>
 		</div>
 	</div>
+	<script type="text/javascript" src="scripts/badge/assignee.js"></script>
+	<%- include('../common-footer.html'); %>
 </body>
 </html>
