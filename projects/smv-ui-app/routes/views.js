@@ -79,7 +79,9 @@ function confirm(req, res) {
 function agreement(req, res) {
   console.log(`agreement`);
 
-  res.render('visiting/agreement.html', {});
+  res.render('visiting/agreement.html', {
+    today: getTodayString()
+  });
 }
 
 function badgelist(req, res) {
