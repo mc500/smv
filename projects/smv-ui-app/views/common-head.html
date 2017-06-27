@@ -3,3 +3,9 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<link rel="stylesheet" href="/style/style.css" />
 	<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		function getSmvVisitBase(path) {
+			path = path || '';
+			return `<%=SMV_VISIT_BASE_URL%>${path}`;
+		}
+	</script>

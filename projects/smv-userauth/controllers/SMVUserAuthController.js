@@ -11,7 +11,8 @@ var exampleUser = {
   'name' : 'John Doe',
   'mobile' : '+82-10-1234-0000',
   'userid' : 'CN=John Doe/OU=ACME/O=IBM',
-  'email' : 'john.doe@acme.ibm.com'
+  'email' : 'john.doe@acme.ibm.com',
+  'dept': 'Client Innovation Lab'
 };
 
 function extractAuthToken(req) {

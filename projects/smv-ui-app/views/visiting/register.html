@@ -8,38 +8,46 @@
 	<%- include('../common-header.html'); %>
 	<div class = "container visiting register">
 		방문자 등록
+		<div class="hidden">
+			<input id="euserid" hidden value="<%=userinfo.userid%>">
+			<input id="eemail" hidden value="<%=userinfo.email%>">
+		</div>
 		<table>
 			<tbody>
 				<tr>
 					<td>일시</td>
-					<td><input id="date" type="date" value="<%=today%>"></td>
+					<td><input id="datetime" type="datetime-local" value="<%=datetime%>"></td>
 					<td>임직원</td>
-					<td><input id="escort"></td>
+					<td><input id="ename" disabled value="<%=userinfo.name%>"></td>
 				</tr>
 				<tr>
 					<td>이름</td>
-					<td><input id="name"></td>
+					<td><input id="name" value="Jane Doe"></td>
 					<td>연락처</td>
-					<td><input id="escort"></td>
+					<td><input id="emobile" disabled value="<%=userinfo.mobile%>"></td>
 				</tr>
 				<tr>
 					<td>직위</td>
-					<td><input id="title"></td>
+					<td><input id="title" value="Dr."></td>
 					<td>부서</td>
-					<td><input id="escort"></td>
+					<td><input id="edept" disabled value="<%=userinfo.dept%>"></td>
 				</tr>
 				<tr>
 					<td>연락처</td>
-					<td><input id="contact"></td>
+					<td><input id="contact" value="+82-1-1234-0678"></td>
+				</tr>
+				<tr>
+					<td>이메일</td>
+					<td><input id="email" value="jane.doe@customer.com"></td>
 				</tr>
 				<tr>
 					<td>회사</td>
-					<td><input id="company"></td>
+					<td><input id="company" value="Customers Inc"></td>
 				</tr>
 			</tbody>
 		</table>
 		<div>
-			<button id="register" onclick="alert('등록');">등록</button>
+			<button id="register">등록</button>
 			<button id="cancel" onclick="history.back(1);">취소</button>
 		</div>
 	</div>

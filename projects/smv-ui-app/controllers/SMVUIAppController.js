@@ -6,6 +6,8 @@ const SMV_USERAUTH_BASE_URL = process.env['SMV_USERAUTH_BASE_URL'];
 
 var request = require('request');
 
+var SMVAuthTokenHelper = require('./SMVAuthTokenHelper');
+
 function extractAuthToken(req) {
   var token = req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()];
   if (!token) {
@@ -48,6 +50,10 @@ function login(req, res, next) {
 
     res.cookie(AUTH_TOKEN_KEY, authtoken, {
       maxAge: 30*60*1000 // 30 mins
+    });
+
+    SMVAuthTokenHelper.setAuthTokenValue(authtoken, 'userinfo', response.body, ()=>{
+      console.log('saved');
     });
       
     // Redirect to visiting list

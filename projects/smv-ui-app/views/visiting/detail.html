@@ -8,44 +8,60 @@
 	<%- include('../common-header.html'); %>
 	<div class = "container visiting detail">
 		방문자 상세 정보
+
+<% if (typeof error != "undefined") { %>
+		<div class="error">
+			오류가 발생했습니다: <%=error%>
+		</div>
+		<div>
+			<button id="cancel" onclick="history.back(1);">뒤로</button>
+		</div>
+<% } else { %>
+		<div class="hidden">
+			<input id="euserid" hidden value="<%=escort.id%>">
+			<input id="eemail" hidden value="<%=escort.email%>">
+			<input id="visitingid" hidden value="<%=visitingid%>">
+		</div>
 		<table>
 			<tbody>
 				<tr>
 					<td>일시</td>
-					<td><input id="date" type="date"></td>
+					<td><input id="datetime" type="datetime-local" value="<%=ndate%>"></td>
 					<td>임직원</td>
-					<td><input id="escort"></td>
+					<td><input id="ename" disabled value="<%=escort.name%>"></td>
 				</tr>
 				<tr>
 					<td>이름</td>
-					<td><input id="name"></td>
+					<td><input id="name" value="<%=visitor.name%>"></td>
 					<td>연락처</td>
-					<td><input id="escort"></td>
+					<td><input id="emobile" value="<%=escort.mobile%>"></td>
 				</tr>
 				<tr>
 					<td>직위</td>
-					<td><input id="title"></td>
+					<td><input id="title" value="<%=visitor.title%>"></td>
 					<td>부서</td>
-					<td><input id="escort"></td>
+					<td><input id="edept" disabled value="<%=escort.dept%>"></td>
 				</tr>
 				<tr>
 					<td>연락처</td>
-					<td><input id="contact"></td>
+					<td><input id="contact" value="<%=visitor.contact%>"></td>
 					<td>카드번호</td>
 					<td><input id="cardnumber"></td>
 				</tr>
 				<tr>
 					<td>회사</td>
-					<td><input id="company"></td>
+					<td><input id="company" value="<%=visitor.company%>"></td>
 					<td>보안서명</td>
 					<td><span><a onclick="alert('대기중');">대기</a></span></td>
 				</tr>
 			</tbody>
 		</table>
 		<div>
-			<button id="update" onclick="alert('변경');">변경</button>
-			<button id="cancel" onclick="history.back(1);">취소</button>
+			<button id="update">변경</button>
+			<button id="delete">삭제</button>
+			<button id="cancel" onclick="history.back(1);">뒤로</button>
 		</div>
+<% } %>
 	</div>
 	<script type="text/javascript" src="/scripts/visiting/detail.js"></script>
 	<%- include('../common-footer.html'); %>

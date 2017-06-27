@@ -9,17 +9,21 @@
 	<div class = "container visiting list">
 		방문 일정
 		<div>
-			<input id="date" type="date" value="<%=today%>">
-			<input id="search" placeholder="검색내용">
+			<input id="date" type="date" value="<%=date%>">
+			<input id="keyword" placeholder="검색내용" value="<%=keyword%>">
 			<select id="type">
-				<option value="NONE" selected disabled>선택하세요</option>
-				<option value="NAME">방문자명</option>
-				<option value="EMAIL">이메일</option>
-				<option value="CONTACT">연락처</option>
+				<option value="NAME" <% if(type == 'NAME' || type == undefined) { %>selected<% } %> >방문자명</option>
+				<option value="EMAIL" <% if(type == 'EMAIL') { %>selected<% } %> >이메일</option>
+				<option value="CONTACT" <% if(type == 'CONTACT') { %>selected<% } %> >연락처</option>
 			</select>
 			<button id="search">검색</button>
 			<button id="register" onclick="window.location='/visiting/register';">방문등록</button>
 		</div>
+<% if (typeof error != "undefined") { %>
+		<div class="error">
+			오류가 발생했습니다: <%=error%>
+		</div>
+<% } else { %>
 		<table>
 			<tbody>
 				<tr>
@@ -36,28 +40,80 @@
 					<th>연락처</th>
 					<th>부서</th>
 				</tr>
-				<tr>
-					<td>1</td>
-					<td>2017-06-11</td>
-					<td>홍길동</td>
-					<td>대장</td>
-					<td>010-9999-1111</td>
-					<td>활빈당</td>
-					<td>발급</td>
-					<td>임시</td>
-					<td>01</td>
-					<td>John Doe</td>
-					<td>+82-2-1234-0000</td>
-					<td>Client Innovation Lab</td>
+				<% for (var i=0 ; i < result.length ; i++) {%>
+				<tr class="visiting" data-id="<%=result[i].id%>" data-escort-id="<%=result[i].escort.id%>">
+					<td><%=result[i].idx%></td>
+					<td><%=result[i].ndate%></td>
+					<td><%=result[i].visitor.name%></td>
+					<td><%=result[i].visitor.title%></td>
+					<td><%=result[i].visitor.contact%></td>
+					<td><%=result[i].visitor.company%></td>
+					<td><% if (result[i].agreement) { %>
+						확인
+					<% } else { %>
+						미동의
+					<% } %></td>
+					<% if (result[i].badge) { %>
+					<td><%=result[i].badge.type%></td>
+					<td><%=result[i].badge.number%></td>
+					<% } else { %>
+					<td colspan="2">미할당</td>
+					<% } %>
+					<td><%=result[i].escort.name%></td>
+					<td><%=result[i].escort.contact%></td>
+					<td><%=result[i].escort.dept%></td>
 				</tr>
+				<% } %>
+
+				<% if (result.length == 0) {%>
+				<tr>
+					<td></td>
+					<td colspan="11">방문 등록 정보가 없습니다.</td>
+				</tr>
+				<% } %>
 			</tbody>
 		</table>
 		<div id="paging">
 			<ul>
-				<li> 1 </li>
-				<li> 2 </li>
-				<li> 3 </li>
+
+<% if (pageinfo.page > pageinfo.windowSize) { %>
+<li>
+	<a href="#1" data-page="1" class="btn_first">처음</a>
+</li>
+<% } %>
+
+<% if (pageinfo.prevwindow) { %>
+<li>
+	<a href="#<%=pageinfo.prevwindow%>" data-page="<%=pageinfo.prevwindow%>" class="prev_window">이전</a>
+</li>
+
+<% } %>
+<% for (var i=0 ; i < pageinfo.pages.length ; i++) { %>
+	<li>
+<% if (pageinfo.page == pageinfo.pages[i].page) { %>
+    <b><%=pageinfo.pages[i].page%></b>
+<% } else { %>
+	<a href="?<%=pageinfo.pages[i].query%>" data-page="<%=pageinfo.pages[i].page%>" class="paging_num">
+		<%=pageinfo.pages[i].page%>
+	</a>
+<% } %>
+	</li>
+<% } %>
+
+<% if (pageinfo.nextwindow) { %>
+<li>
+	<a href="#<%=pageinfo.nextwindow%>" data-page="<%=pageinfo.nextwindow%>" class="next_window">다음</a>
+</li>
+<% } %>
+
+<% if (pageinfo.lastpage) { %>
+<li>
+	<a href="#<%=pageinfo.lastpage%>" data-page="<%=pageinfo.lastpage%>" class="next_page">마지막</a>
+</li>
+<% } %>
 			</ul>
+
+<% } %>
 		</div>
 	</div>
 	<script type="text/javascript" src="/scripts/visiting/list.js"></script>

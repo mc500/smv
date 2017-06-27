@@ -21,8 +21,33 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 // serve the files out of ./public as our main files
 app.use(express.static(__dirname + '/public'));
+
+const SMV_UI_APP_BASE_URL = process.env['SMV_UI_APP_BASE_URL'];
+
+// to be placed before api service handlers
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', SMV_UI_APP_BASE_URL);
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  //res.setHeader('Access-Control-Allow-Headers', 'X-AUTH-TOKEN,applicaiton/json');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
 
 // Expose the SMVVisitController
 var SMVVisitController = require('./controllers/SMVVisitController');

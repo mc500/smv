@@ -2,18 +2,20 @@
 
 const BASE_PATH = '/api/smv/v1/visit';
 const AUTH_TOKEN_KEY = 'X-AUTH-TOKEN';
-const DOC_TYPE = 'BADGE';
-const UPDATABLE_PROPS = ['visitor', 'escort', 'agreement', 'badge'];
+const DOC_TYPE = 'VISIT';
+const UPDATABLE_PROPS = ['date', 'visitor', 'escort', 'agreement', 'badge'];
 
 var SMVAuthTokenHelper = require('./SMVAuthTokenHelper'),
   SMVCloudantHelper = require('./SMVCloudantHelper'),
   mydb = SMVCloudantHelper.initDB('smv');
 
 function extractAuthToken(req) {
-  var token = req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()];
+  var token = req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()] || req.cookies[AUTH_TOKEN_KEY];
+
   if (!token) {
     console.error(`${AUTH_TOKEN_KEY} is not in the header as key`);
   }
+  console.log(token);
   return token;
 }
 
@@ -111,10 +113,16 @@ function updateVisit(req, res) {
         var key = UPDATABLE_PROPS[idx];
         console.log(`key:${key}`);
         if (req.body.hasOwnProperty(key)) {
-          jsondoc[key] = Object.assign(jsondoc[key], req.body[key]);
+          if (typeof jsondoc[key] == 'object') {
+            jsondoc[key] = Object.assign(jsondoc[key], req.body[key]); 
+          } else {
+            // override
+            jsondoc[key] = req.body[key];
+          }
         }
       }
 
+      jsondoc['date'] = new Date(jsondoc.date).getTime();
       jsondoc['updated'] = new Date().getTime();
 
       mydb.insert(jsondoc, function(err, doc) {
@@ -256,10 +264,10 @@ function searchVisits(req, res) {
     res.end('Invalid Query Parameter: the size is 0 or negative value');
     return;
   }
-  if (page <= 0) {
+  if (page < 0) {
     // Error 
     res.statusCode = 400;
-    res.end('Invalid Query Parameter: the page is 0 or negative value');
+    res.end('Invalid Query Parameter: the page is negative value');
     return;
   }
 
@@ -271,6 +279,13 @@ function searchVisits(req, res) {
   var queryIndex;
   if (type) {
     var keytype = type.toLowerCase();
+
+    if (!keyword) {
+      // Error 
+      res.statusCode = 400;
+      res.end('Invalid Query Parameter: Keyword is empty');
+      return;
+    }
     var ekeyword = keyword.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
     var searchByType = {};
@@ -313,11 +328,6 @@ function searchVisits(req, res) {
   mydb.find({
     selector: selector,
     fields: ['type'],
-    // sort: [{
-    //   'date:string': 'desc'
-    // }],
-    // limit: limit,
-    // skip: skip,
     use_index: queryIndex
   }, function(err, totalInfo) {
     if (err) {
@@ -338,26 +348,24 @@ function searchVisits(req, res) {
         limit = size;
         
         // Set the page as last
-        var maxpage = Math.floor(total/size-1);
+        var maxpage = Math.floor(total/size);
         page = page || 0; // defaul page index is 0
 
         if (maxpage < page) {
           page = maxpage;
         }
-        //console.log(`page:${page}, size:${size}`);
         skip = page * size;
       } else {
         size = undefined;
         page = 0;
       }
 
-      //console.log(`limit:${limit}, skip:${skip}`);
+      console.log(`limit:${limit}, skip:${skip}`);
 
       mydb.find({
         selector: selector,
-        // sort: [{
-        //   'date:string': 'desc'
-        // }],
+        // sort: ['date'],
+        sort:[{'date:number': 'asc'}],
         limit: limit,
         skip: skip,
         use_index: queryIndex

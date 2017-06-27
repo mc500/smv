@@ -179,3 +179,11 @@ tr:hover .deleteBtn {
 .appinfo {
 	padding: 10px;
 }
+
+/* */
+.hide {
+	display: none;
+}
+.hidden {
+	display: none;
+}
