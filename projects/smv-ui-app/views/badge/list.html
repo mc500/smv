@@ -1,25 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>임시 출입 카드</title>
 	<%- include('../common-head.html'); %>
 </head>
 <body>
 	<%- include('../common-header.html'); %>
 	<div class = "container badge list">
-		임시 출입 카드
+		<!-- 임시 출입 카드 -->
 		<div>
-			<input id="date" type="date" value="<%=today%>">
-			<input id="search" placeholder="검색내용">
-			<select id="type">
-				<option value="NONE" selected disabled>선택하세요</option>
-				<option value="NAME">방문자명</option>
-				<option value="EMAIL">이메일</option>
-				<option value="CONTACT">연락처</option>
-			</select>
+			<input name="available" id="available" type="checkbox">발급가능 카드만 보기<br>
+			<input name="occupied" id="occupied" type="checkbox">미회수 카드만 보기<br>
 			<button id="search">검색</button>
-			<button id="register" onclick="window.location='/visiting/register';">방문등록</button>
 		</div>
+<% if (typeof error != "undefined") { %>
+		<div class="error">
+			오류가 발생했습니다: <%=error%>
+		</div>
+<% } else { %>
 		<table>
 			<tbody>
 				<tr>
@@ -33,17 +30,26 @@
 					<th>연락처</th>
 					<th>부서</th>
 				</tr>
+				<% for (var i=0 ; i < result.length ; i++) {%>
 				<tr>
-					<td>임시</td>
-					<td>01</td>
-					<td>발급</td>
-					<td>2017-06-11</td>
-					<td>홍길동</td>
-					<td>010-9999-1111</td>
-					<td>John Doe</td>
-					<td>+82-2-1234-0000</td>
-					<td>Client Innovation Lab</td>
+					<td><%=result[i].type%></td>
+					<td><%=result[i].number%></td>
+					<td><%=result[i].status%></td>
+					<td><%=result[i].ndate%></td>
+					<td><%=result[i].assignee%></td>
+					<td><%=result[i].contact%></td>
+					<td><%=result[i].ename%></td>
+					<td><%=result[i].emobile%></td>
+					<td><%=result[i].edept%></td>
 				</tr>
+				<% } %>
+
+				<% if (result.length == 0) {%>
+				<tr>
+					<td></td>
+					<td colspan="9">출입 카드 정보가 없습니다.</td>
+				</tr>
+				<% } %>
 			</tbody>
 		</table>
 		<div id="paging">

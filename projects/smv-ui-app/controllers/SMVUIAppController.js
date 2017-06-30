@@ -48,12 +48,9 @@ function login(req, res, next) {
       return; 
     }
 
+    // keep authtoken as cookie
     res.cookie(AUTH_TOKEN_KEY, authtoken, {
       maxAge: 30*60*1000 // 30 mins
-    });
-
-    SMVAuthTokenHelper.setAuthTokenValue(authtoken, 'userinfo', response.body, ()=>{
-      console.log('saved');
     });
       
     // Redirect to visiting list

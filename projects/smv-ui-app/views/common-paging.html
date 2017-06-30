@@ -1,0 +1,40 @@
+		<div id="paging">
+			<ul>
+
+<% if (pageinfo.page > pageinfo.windowSize) { %>
+<li>
+	<a href="#1" data-page="1" class="btn_first">처음</a>
+</li>
+<% } %>
+
+<% if (pageinfo.prevwindow) { %>
+<li>
+	<a href="#<%=pageinfo.prevwindow%>" data-page="<%=pageinfo.prevwindow%>" class="prev_window">이전</a>
+</li>
+
+<% } %>
+<% for (var i=0 ; i < pageinfo.pages.length ; i++) { %>
+	<li>
+<% if (pageinfo.page == pageinfo.pages[i].page) { %>
+    <b><%=pageinfo.pages[i].page%></b>
+<% } else { %>
+	<a href="?<%=pageinfo.pages[i].query%>" data-page="<%=pageinfo.pages[i].page%>" class="paging_num">
+		<%=pageinfo.pages[i].page%>
+	</a>
+<% } %>
+	</li>
+<% } %>
+
+<% if (pageinfo.nextwindow) { %>
+<li>
+	<a href="#<%=pageinfo.nextwindow%>" data-page="<%=pageinfo.nextwindow%>" class="next_window">다음</a>
+</li>
+<% } %>
+
+<% if (pageinfo.lastpage) { %>
+<li>
+	<a href="#<%=pageinfo.lastpage%>" data-page="<%=pageinfo.lastpage%>" class="next_page">마지막</a>
+</li>
+<% } %>
+			</ul>
+		</div>

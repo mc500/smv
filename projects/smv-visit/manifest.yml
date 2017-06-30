@@ -12,3 +12,4 @@ applications:
   - smv-ui-app-cloudantNoSQLDB
 env:
   SMV_USERAUTH_BASE_URL: http://smv-userauth.mybluemix.net
+  SMV_UI_APP_BASE_URL: http://smv-ui-app.mybluemix.net

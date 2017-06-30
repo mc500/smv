@@ -9,3 +9,6 @@
 			return `<%=SMV_VISIT_BASE_URL%>${path}`;
 		}
 	</script>
+	<% if (typeof title != "undefined") { %>
+	<title><%=title%></title>
+	<% } %>

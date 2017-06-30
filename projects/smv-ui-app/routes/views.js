@@ -12,7 +12,8 @@ var SMVAuthTokenHelper = require('../controllers/SMVAuthTokenHelper'),
   SMVCloudantHelper = require('../controllers/SMVCloudantHelper'),
   mydb = SMVCloudantHelper.initDB('smv');
 
-var request = require('request');
+var request = require('request'),
+  querystring = require('querystring');
 
 function extractAuthToken(req) {
   //var token = req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()];
@@ -44,11 +45,17 @@ function authenticatedFilter(req, res, next) {
 }
 
 
-function renderFunction(res, view, obj) {
+function renderFunction(req, res, view, obj) {
   obj = obj || {};
   obj['SMV_VISIT_BASE_URL'] = SMV_VISIT_BASE_URL;
 
-  return res.render(view, obj);
+  var authtoken = extractAuthToken(req);
+  SMVAuthTokenHelper.getAuthTokenValue(authtoken, 'userinfo', (result)=>{
+      if (result) {
+        obj['userinfo'] = JSON.parse(result); 
+      }
+      return res.render(view, obj);
+  });
 }
 
 function getTodayString() {
@@ -112,17 +119,21 @@ function getDateTimeString(date) {
 }
 
 function login(req, res) {
-  renderFunction(res, 'login.html', {});
+  renderFunction(req, res, 'login.html', {
+    title: '로그인'
+  });
 }
 
 function register(req, res) {
   var authtoken = extractAuthToken(req);
   SMVAuthTokenHelper.getAuthTokenValue(authtoken, 'userinfo', (result)=>{
-      console.log(result);
-      var userinfo = JSON.parse(result);
-      console.log(userinfo);
-      console.log('userinfo.name:'+userinfo.name);
-      renderFunction(res, 'visiting/register.html', {
+      var userinfo;
+      if (result) {
+        userinfo = JSON.parse(result);
+        console.log('userinfo.name:'+userinfo.name); 
+      }
+      renderFunction(req, res, 'visiting/register.html', {
+        title: '방문자 등록',
         datetime: getNextDateTimeString(),
         userinfo : userinfo
       });
@@ -142,14 +153,16 @@ function detail(req, res) {
   }, function(error, response, body) {
     if (error) {
       console.log(error);
-      return renderFunction(res, 'visiting/detail.html', {
+      return renderFunction(req, res, 'visiting/detail.html', {
+        title: '방문자 상세 정보',
         error: error
       });
     }
 
     // Check Error Condition
     if (response.statusCode != 200) {
-      return renderFunction(res, 'visiting/detail.html', {
+      return renderFunction(req, res, 'visiting/detail.html', {
+        title: '방문자 상세 정보',
         error: `Response with code ${response.statusCode}, ${body}`
       });
     }
@@ -157,9 +170,10 @@ function detail(req, res) {
     var json = body ? JSON.parse(body) : {};
     console.log(json);
 
+    json.title = '방문자 상세 정보';
     json.visitingid = visitingid;
     json.ndate = getDateTimeString(new Date(json.date));
-    renderFunction(res, 'visiting/detail.html', json);
+    renderFunction(req, res, 'visiting/detail.html', json);
   });
 }
 
@@ -200,7 +214,8 @@ function visitinglist(req, res) {
   }, function(error, response, body) {
     if (error) {
       console.log(error);
-      return renderFunction(res, 'visiting/list.html', {
+      return renderFunction(req, res, 'visiting/list.html', {
+        title: '방문 일정 조회',
         date: getDateString(date),
         keyword: keyword,
         type: type,
@@ -210,7 +225,8 @@ function visitinglist(req, res) {
 
     // Check Error Condition
     if (response.statusCode != 200) {
-      return renderFunction(res, 'visiting/list.html', {
+      return renderFunction(req, res, 'visiting/list.html', {
+        title: '방문 일정 조회',
         date: getDateString(date),
         keyword: keyword,
         type: type,
@@ -263,8 +279,6 @@ function visitinglist(req, res) {
     
     pageinfo.pages = [];
 
-    var querystring = require('querystring');
-
     for(var i=0; i< len; i++) {
       var pagenum = off+i+1;
       query.page = pagenum;
@@ -282,7 +296,8 @@ function visitinglist(req, res) {
 
     console.log(`page:${page}`);
 
-    renderFunction(res, 'visiting/list.html', {
+    renderFunction(req, res, 'visiting/list.html', {
+      title: '방문 일정 조회',
       date: getDateString(date),
       datetime: getDateTimeString(date),
       keyword: keyword,
@@ -302,23 +317,165 @@ function visitinglist(req, res) {
 function confirm(req, res) {
   console.log(`visiting confirm`);
 
-  renderFunction(res, 'visiting/confirm.html', {});
+  renderFunction(req, res, 'visiting/confirm.html', {
+    title: '방문자 정보 확인'
+  });
 }
 
 function agreement(req, res) {
   console.log(`agreement`);
 
-  renderFunction(res, 'visiting/agreement.html', {
+  renderFunction(req, res, 'visiting/agreement.html', {
+    title: '보안 서약 정보 동의',
     today: getTodayString()
   });
 }
 
 function badgelist(req, res) {
-  renderFunction(res, 'badge/list.html', {});
+  console.log(`badgelist list`);
+
+  var authtoken = extractAuthToken(req);
+
+  // date
+  var date = new Date(req.query.date ? req.query.date : getDateString());
+  var keyword = req.query.keyword;
+  var type = req.query.type;
+  var page = Number(req.query.page);
+  var size = req.query.size || PAGE_SIZE;
+
+  console.log(`${SMV_VISIT_BASE_URL}/search`);
+
+  if (Number.isNaN(page) || page < 1) page = undefined;
+
+  // reset type if keyword is empty
+  if (!keyword) {
+    type = undefined;
+  }
+
+  var query = {
+    date: date,
+    type: type,
+    keyword: keyword,
+    page: page-1, // page starts with 0
+    size: size
+  };
+
+  // search 
+  request.get({
+    url: `${SMV_VISIT_BASE_URL}/api/smv/v1/badge/search`,
+    headers: buildAuthHeaders(authtoken),
+    qs: query
+  }, function(error, response, body) {
+    if (error) {
+      console.log(error);
+      return renderFunction(req, res, 'badge/list.html', {
+        title: '임시 출입 카드 조회',
+        filters: {
+          available: available,
+          occupied: occupied,
+        },
+        error: error
+      });
+    }
+
+    // Check Error Condition
+    if (response.statusCode != 200) {
+      return renderFunction(req, res, 'badge/list.html', {
+        title: '임시 출입 카드 조회',
+        filters: {
+          available: available,
+          occupied: occupied,
+        },
+        error: `Response with code ${response.statusCode}, ${body}`
+      });
+    }
+
+    var json = body ? JSON.parse(body) : [];
+
+    var paging = json.paging;
+
+    paging.size = paging.size;
+
+    console.log(paging);
+
+    var page = paging.page + 1; // start from 0
+    var total = paging.total;
+    var pageSize = paging.size;
+    var windowSize = PAGE_WINDOW_SIZE;
+
+    var pageinfo = {
+      page: page,
+      windowSize: windowSize
+    };
+
+    // Number of pages
+    var npages = Math.ceil(total / pageSize);
+
+    // Prev Window
+    if (page > windowSize) {
+        var mod = page % windowSize;
+        
+        pageinfo.prevwindow = page - ((mod != 0)? mod : windowSize);
+    }
+
+    // Next Window
+    var mod = page % windowSize;
+    var p = page + windowSize - ((mod != 0)? mod : windowSize) + 1;
+    
+    if (p <= npages) {
+        pageinfo.nextwindow = p
+
+        // Last Page
+        pageinfo.lastpage = npages;
+    }
+
+    // Offset
+    var off = Math.floor((page - 1) / windowSize) * windowSize;
+    var len = Math.min(Math.min(windowSize, npages), npages - off);
+    
+    pageinfo.pages = [];
+
+    for(var i=0; i< len; i++) {
+      var pagenum = off+i+1;
+      query.page = pagenum;
+      pageinfo.pages.push({
+        page: pagenum,
+        query: querystring.stringify({
+          date: getDateString(date),
+          type: type,
+          keyword: keyword,
+          page: pagenum,
+          size: size
+        })
+      });
+    }
+
+    console.log(`page:${page}`);
+
+    renderFunction(req, res, 'badge/list.html', {
+      title: '임시 출입 카드 조회',
+      filters: {
+        available: available,
+        occupied: occupied,
+      },
+      result: json.result.map((item, idx)=>{        
+        var ret = Object.assign({}, item);
+        ret.idx = (page - 1) * pageSize + idx + 1;
+        // date
+        ret.ndate = getDateTimeString(new Date(item.date));
+        return ret;
+      }),
+      pageinfo : pageinfo
+    });
+  });
 }
 
+
+
 function badgeassignee(req, res) {
-  renderFunction(res, 'badge/assignee.html', {}); 
+  renderFunction(req, res, 'badge/assignee.html', {
+    title: '발급자 상세 정보'
+  }); 
 }
 
 exports.init = function(app) {

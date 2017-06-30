@@ -27,32 +27,38 @@ function authenticatedFilter(req, res, next) {
   });
 }
 
-var USER_INFO_SAMPLE = [{
-  'userid': 'CN=John Doe/OU=ACME/O=IBM',
-  'serial': '1234567890', 
-  'name': 'John Doe',
-  'email': 'john.doe@acme.ibm.com',
-  'dept': 'Client Innovation Lab',
-  'phone': '+82-2-1234-0001',
-  'mobile': '+82-10-1234-0001',
-  'role': 'ESCORT'
-}, {
-  'userid': 'CN=Sally Doe/OU=ACME/O=IBM',
-  'name': 'Sally Doe',
-  'email': 'sally.doe@acme.ibm.com',
-  'dept': 'Client Innovation Lab',
-  'phone': '+82-2-1234-1002',
-  'mobile': '+82-10-1234-1002',
-  'role': 'RECEPTION'
-}, {
-  'userid': 'CN=Lisa Doe/OU=ACME/O=IBM',
-  'name': 'Lisa Doe',
-  'email': 'lisa.doe@acme.ibm.com',
-  'dept': 'Client Innovation Lab',
-  'phone': '+82-2-1234-9003',
-  'mobile': '+82-10-1234-9003',
-  'role': 'ADMIN'
-}];
+var USER_INFO_SAMPLES = [
+  {
+    'role' : 'ESCORT',
+    'serial' : '1234567890',
+    'phone' : '+82-2-1234-0000',
+    'name' : 'John Doe',
+    'mobile' : '+82-10-1234-0000',
+    'userid' : 'CN=John Doe/OU=ACME/O=IBM',
+    'email' : 'john.doe@acme.ibm.com',
+    'dept': 'Client Innovation Lab'
+  },
+  {
+    'role' : 'RECEPTION',
+    'serial' : '1000000000',
+    'phone' : '+82-2-1234-1111',
+    'name' : 'Jay Doe',
+    'mobile' : '+82-10-1234-1111',
+    'userid' : 'CN=Sally Doe/OU=ACME/O=IBM',
+    'email' : 'sally.doe@acme.ibm.com',
+    'dept': 'Client Service'
+  },
+  {
+    'role' : 'ADMIN',
+    'serial' : '9000000000',
+    'phone' : '+82-2-1234-9999',
+    'name' : 'Lisa Doe',
+    'mobile' : '+82-10-1234-9999',
+    'userid' : 'CN=Lisa Doe/OU=ACME/O=IBM',
+    'email' : 'lisa.doe@acme.ibm.com',
+    'dept': 'Client Service'
+  }
+];
 
 var USER_ROLES = ['ESCORT', 'RECEPTION', 'ADMIN'];
 
@@ -61,7 +67,7 @@ function getUserInfo(req, res) {
 
   console.log(`getUserInfo: user id ${userid}`);
 
-  var isFound = USER_INFO_SAMPLE.some(function(userinfo) {
+  var isFound = USER_INFO_SAMPLES.some(function(userinfo) {
     if (userinfo.userid == userid) {
       res.json(userinfo);
       res.end();
@@ -103,7 +109,7 @@ function updateUserRole(req, res) {
 
   // Find user info
   var foundUserInfo = undefined;
-  USER_INFO_SAMPLE.some(function(userinfo) {
+  USER_INFO_SAMPLES.some(function(userinfo) {
     if (userinfo.userid == userid) {
       foundUserInfo = Object.assign({}, userinfo);
       foundUserInfo.role = newrole;

@@ -4,16 +4,41 @@ const AUTH_TOKEN_KEY = 'X-AUTH-TOKEN';
 
 var SMVAuthTokenHelper = require('./SMVAuthTokenHelper');
 
-var exampleUser = {
-  'role' : 'USER',
-  'serial' : '1234567890',
-  'phone' : '+82-2-1234-0000',
-  'name' : 'John Doe',
-  'mobile' : '+82-10-1234-0000',
-  'userid' : 'CN=John Doe/OU=ACME/O=IBM',
-  'email' : 'john.doe@acme.ibm.com',
-  'dept': 'Client Innovation Lab'
-};
+var USER_INFO_SAMPLES = [
+  {
+    'role' : 'ESCORT',
+    'serial' : '1234567890',
+    'phone' : '+82-2-1234-0000',
+    'name' : 'John Doe',
+    'mobile' : '+82-10-1234-0000',
+    'userid' : 'CN=John Doe/OU=ACME/O=IBM',
+    'email' : 'john.doe@acme.ibm.com',
+    'dept': 'Client Innovation Lab',
+    'passwd': 'passw0rd'
+  },
+  {
+    'role' : 'RECEPTION',
+    'serial' : '1000000000',
+    'phone' : '+82-2-1234-1111',
+    'name' : 'Jay Doe',
+    'mobile' : '+82-10-1234-1111',
+    'userid' : 'CN=Sally Doe/OU=ACME/O=IBM',
+    'email' : 'sally.doe@acme.ibm.com',
+    'dept': 'Client Service',
+    'passwd': 'passw0rd'
+  },
+  {
+    'role' : 'ADMIN',
+    'serial' : '9000000000',
+    'phone' : '+82-2-1234-9999',
+    'name' : 'Lisa Doe',
+    'mobile' : '+82-10-1234-9999',
+    'userid' : 'CN=Lisa Doe/OU=ACME/O=IBM',
+    'email' : 'lisa.doe@acme.ibm.com',
+    'dept': 'Client Service',
+    'passwd': 'passw0rd'
+  }
+];
 
 function extractAuthToken(req) {
   var token = req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()];
@@ -33,11 +58,10 @@ module.exports.userinfoGET = function (req, res, next) {
   SMVAuthTokenHelper.isValidAuthToken(token, function(valid) {
     if (valid) {
       // 
-      SMVAuthTokenHelper.getAuthTokenValue(token, 'userid', function(result){
-        if (result && result == example.email) {
+      SMVAuthTokenHelper.getAuthTokenValue(token, 'userinfo', function(result){
+        if (result) {
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(exampleUser));
-          res.end(); 
+          res.end(result);
         } else {
           // Error 
           res.statusCode = 500;
@@ -75,16 +99,26 @@ module.exports.loginPOST = function (req, res, next) {
     return;
   }
 
+  var sampleUserInfo;
   var email = args.email.value;
   var passwd = args.passwd.value;
-  if (email === 'john.doe@acme.ibm.com' && passwd === 'passw0rd') {
+  var isFound = USER_INFO_SAMPLES.some(function(userinfo) {
+    if (userinfo.email == email) {
+      sampleUserInfo = Object.assign({}, userinfo);
+      return true;
+    }
+  });
+
+  if (isFound && sampleUserInfo.passwd == passwd) {
+    sampleUserInfo.passwd = undefined;
+    sampleUserInfo = JSON.stringify(sampleUserInfo);
     SMVAuthTokenHelper.generateAuthToken(function(token) {
       // Set the key of user
-      SMVAuthTokenHelper.setAuthTokenValue(token, 'userid', email, function(result){
+      SMVAuthTokenHelper.setAuthTokenValue(token, 'userinfo', sampleUserInfo, function(result){
         if (result) {
           res.setHeader(AUTH_TOKEN_KEY, token);
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(exampleUser));
+          res.end(sampleUserInfo);
         } else {
           // Error 
           res.statusCode = 500;
