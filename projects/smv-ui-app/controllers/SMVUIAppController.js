@@ -55,10 +55,12 @@ function authenticatedViewFilter(req, res, next) {
 function renderFunction(req, res, view, obj) {
   obj = obj || {};
   obj['SMV_VISIT_BASE_URL'] = SMV_VISIT_BASE_URL;
+  obj['AUTH_TOKEN_KEY'] = AUTH_TOKEN_KEY;
 
   var authtoken = extractViewAuthToken(req);
   SMVAuthTokenHelper.getAuthTokenValue(authtoken, 'userinfo', (result)=>{
     if (result) {
+      obj['AUTH_TOKEN_VALUE'] = authtoken;
       obj['userinfo'] = JSON.parse(result); 
     }
     return res.render(view, obj);

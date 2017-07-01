@@ -51,12 +51,15 @@
       'badge': undefined
     };
 
+    var headersObject = getAuthTokenHeader();
+
     $.ajax({
       type: 'POST',
       url: getSmvVisitBase('/api/smv/v1/visit'),
       xhrFields: {
         withCredentials: true
       },
+      headers: headersObject,
       data: visitObject,
       success: function (data) {
         console.log(data);

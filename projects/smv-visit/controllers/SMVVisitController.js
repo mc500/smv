@@ -13,7 +13,7 @@ function extractAuthToken(req) {
   var token = req.headers[AUTH_TOKEN_KEY] || req.headers[AUTH_TOKEN_KEY.toLowerCase()] || req.cookies[AUTH_TOKEN_KEY];
 
   if (!token) {
-    console.error(`${AUTH_TOKEN_KEY} is not in the header as key`);
+    console.error(`${AUTH_TOKEN_KEY} is not in headers or cookies`);
   }
   console.log(token);
   return token;
