@@ -58,10 +58,10 @@ function renderFunction(req, res, view, obj) {
 
   var authtoken = extractViewAuthToken(req);
   SMVAuthTokenHelper.getAuthTokenValue(authtoken, 'userinfo', (result)=>{
-      if (result) {
-        obj['userinfo'] = JSON.parse(result); 
-      }
-      return res.render(view, obj);
+    if (result) {
+      obj['userinfo'] = JSON.parse(result); 
+    }
+    return res.render(view, obj);
   });
 }
 
@@ -237,7 +237,7 @@ function detailView(req, res) {
 }
 
 function visitinglistView(req, res) {
-  console.log(`visiting list`);
+  console.log('visiting list');
 
   var authtoken = extractViewAuthToken(req);
 
@@ -311,23 +311,22 @@ function visitinglistView(req, res) {
 
     // Number of pages
     var npages = Math.ceil(total / pageSize);
+    var mod = page % windowSize;
 
     // Prev Window
     if (page > windowSize) {
-        var mod = page % windowSize;
-        
-        pageinfo.prevwindow = page - ((mod != 0)? mod : windowSize);
+      
+      pageinfo.prevwindow = page - ((mod != 0)? mod : windowSize);
     }
 
     // Next Window
-    var mod = page % windowSize;
     var p = page + windowSize - ((mod != 0)? mod : windowSize) + 1;
     
     if (p <= npages) {
-        pageinfo.nextwindow = p
+      pageinfo.nextwindow = p;
 
-        // Last Page
-        pageinfo.lastpage = npages;
+      // Last Page
+      pageinfo.lastpage = npages;
     }
 
     // Offset
@@ -371,7 +370,7 @@ function visitinglistView(req, res) {
 }
 
 function confirmView(req, res) {
-  console.log(`visiting confirm`);
+  console.log('visiting confirm');
 
   renderFunction(req, res, 'visiting/confirm.html', {
     title: '방문자 정보 확인'
@@ -379,7 +378,7 @@ function confirmView(req, res) {
 }
 
 function agreementView(req, res) {
-  console.log(`agreement`);
+  console.log('agreement');
 
   renderFunction(req, res, 'visiting/agreement.html', {
     title: '보안 서약 정보 동의',
@@ -388,14 +387,12 @@ function agreementView(req, res) {
 }
 
 function badgelistView(req, res) {
-  console.log(`badgelist list`);
+  console.log('badgelist list');
 
   var authtoken = extractViewAuthToken(req);
 
-  // date
-  var date = new Date(req.query.date ? req.query.date : getDateString());
-  var keyword = req.query.keyword;
-  var type = req.query.type;
+  var available = req.query.available;
+  var occupied = req.query.occupied;
   var page = Number(req.query.page);
   var size = req.query.size || PAGE_SIZE;
 
@@ -403,15 +400,9 @@ function badgelistView(req, res) {
 
   if (Number.isNaN(page) || page < 1) page = undefined;
 
-  // reset type if keyword is empty
-  if (!keyword) {
-    type = undefined;
-  }
-
   var query = {
-    date: date,
-    type: type,
-    keyword: keyword,
+    available: available,
+    occupied: occupied,
     page: page-1, // page starts with 0
     size: size
   };
@@ -466,23 +457,21 @@ function badgelistView(req, res) {
 
     // Number of pages
     var npages = Math.ceil(total / pageSize);
+    var mod = page % windowSize;
 
     // Prev Window
     if (page > windowSize) {
-        var mod = page % windowSize;
-        
-        pageinfo.prevwindow = page - ((mod != 0)? mod : windowSize);
+      pageinfo.prevwindow = page - ((mod != 0)? mod : windowSize);
     }
 
     // Next Window
-    var mod = page % windowSize;
     var p = page + windowSize - ((mod != 0)? mod : windowSize) + 1;
     
     if (p <= npages) {
-        pageinfo.nextwindow = p
+      pageinfo.nextwindow = p;
 
-        // Last Page
-        pageinfo.lastpage = npages;
+      // Last Page
+      pageinfo.lastpage = npages;
     }
 
     // Offset
@@ -496,10 +485,9 @@ function badgelistView(req, res) {
       query.page = pagenum;
       pageinfo.pages.push({
         page: pagenum,
-        query: querystring.stringify({
-          date: getDateString(date),
-          type: type,
-          keyword: keyword,
+        query: JSON.stringify({
+          available: available,
+          occupied: occupied,
           page: pagenum,
           size: size
         })
@@ -517,8 +505,6 @@ function badgelistView(req, res) {
       result: json.result.map((item, idx)=>{        
         var ret = Object.assign({}, item);
         ret.idx = (page - 1) * pageSize + idx + 1;
-        // date
-        ret.ndate = getDateTimeString(new Date(item.date));
         return ret;
       }),
       pageinfo : pageinfo
