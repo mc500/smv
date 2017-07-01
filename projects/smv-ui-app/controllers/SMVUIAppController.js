@@ -193,18 +193,9 @@ function loginView(req, res) {
 }
 
 function registerView(req, res) {
-  var authtoken = extractViewAuthToken(req);
-  SMVAuthTokenHelper.getAuthTokenValue(authtoken, 'userinfo', (result)=>{
-      var userinfo;
-      if (result) {
-        userinfo = JSON.parse(result);
-        console.log('userinfo.name:'+userinfo.name); 
-      }
-      renderFunction(req, res, 'visiting/register.html', {
-        title: '방문자 등록',
-        datetime: getNextDateTimeString(),
-        userinfo : userinfo
-      });
+  renderFunction(req, res, 'visiting/register.html', {
+    title: '방문자 등록',
+    datetime: getNextDateTimeString()
   });
 }
 
@@ -256,8 +247,6 @@ function visitinglistView(req, res) {
   var type = req.query.type;
   var page = Number(req.query.page);
   var size = req.query.size || PAGE_SIZE;
-
-  console.log(`${SMV_VISIT_BASE_URL}/search`);
 
   if (Number.isNaN(page) || page < 1) page = undefined;
 
@@ -349,7 +338,6 @@ function visitinglistView(req, res) {
 
     for(var i=0; i< len; i++) {
       var pagenum = off+i+1;
-      query.page = pagenum;
       pageinfo.pages.push({
         page: pagenum,
         query: querystring.stringify({
