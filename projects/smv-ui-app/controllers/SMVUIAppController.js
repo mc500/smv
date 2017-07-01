@@ -340,7 +340,7 @@ function visitinglistView(req, res) {
       var pagenum = off+i+1;
       pageinfo.pages.push({
         page: pagenum,
-        query: querystring.stringify({
+        query: JSON.stringify({
           date: getDateString(date),
           type: type,
           keyword: keyword,
