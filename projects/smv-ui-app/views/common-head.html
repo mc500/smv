@@ -8,6 +8,14 @@
 			path = path || '';
 			return `<%=SMV_VISIT_BASE_URL%>${path}`;
 		}
+		function getAuthTokenHeader(header) {
+			header = header || {};
+			var obj = Object.assign({}, header);
+<% if (typeof AUTH_TOKEN_VALUE != "undefined") { %>
+			obj[`<%=AUTH_TOKEN_KEY%>`] = `<%=AUTH_TOKEN_VALUE%>`;
+<% } %>
+			return obj;
+		}
 	</script>
 	<% if (typeof title != "undefined") { %>
 	<title><%=title%></title>
