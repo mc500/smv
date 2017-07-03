@@ -82,7 +82,7 @@ function getNextDateTimeString() {
   m.seconds(0);
   m.milliseconds(0);
   m.add(1, 'day');
-  return m.format(DATE_FORMAT);
+  return m.format(DATETIME_FORMAT);
 
   /*
   var date = new Date();
