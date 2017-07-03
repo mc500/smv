@@ -111,7 +111,11 @@ function updateBadgeInfo(req, res) {
         var key = UPDATABLE_PROPS[idx];
         console.log(`key:${key}`);
         if (req.body.hasOwnProperty(key)) {
-          jsondoc[key] = req.body[key];
+          if (key == 'type') {
+            jsondoc['badgetype'] = req.body['type'];
+          } else {
+            jsondoc[key] = req.body[key]; 
+          }
         }
       }
 
