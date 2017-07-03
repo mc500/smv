@@ -5,12 +5,16 @@ const AUTH_TOKEN_KEY = 'X-AUTH-TOKEN';
 const SMV_USERAUTH_BASE_URL = process.env['SMV_USERAUTH_BASE_URL'];
 const SMV_VISIT_BASE_URL = process.env['SMV_VISIT_BASE_URL'];
 const EXPIRES_IN_SECS = 3600; // an hour
+const TIMEZONE_NAME = 'Asia/Seoul';
+const DATE_FORMAT = 'YYYY-MM-DD';
+const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm';
 
 // paging
 const PAGE_WINDOW_SIZE = 5;
 const PAGE_SIZE = 10;
 
-var request = require('request');
+var request = require('request'),
+  moment = require('moment-timezone');
 
 var SMVAuthTokenHelper = require('./SMVAuthTokenHelper');
 
@@ -68,11 +72,19 @@ function renderFunction(req, res, view, obj) {
 }
 
 function getTodayString() {
-  var today = new Date();
-  return getDateString(today);
+  return getDateString();
 }
 
 function getNextDateTimeString() {
+  var m = moment.tz(TIMEZONE_NAME);
+  m.hours(9);
+  m.minutes(0);
+  m.seconds(0);
+  m.milliseconds(0);
+  m.add(1, 'day');
+  return m.format(DATE_FORMAT);
+
+  /*
   var date = new Date();
   date.setHours(9);
   date.setMinutes(0);
@@ -80,11 +92,15 @@ function getNextDateTimeString() {
   date.setMilliseconds(0);
   // next day
   date.setDate(date.getDate()+1);
+  */
 
   return getDateTimeString(date);
 }
 
 function getDateString(date) {
+  return moment.tz(date, TIMEZONE_NAME).format(DATE_FORMAT);
+
+  /*
   date = date || new Date(); // today
 
   var year = date.getFullYear();
@@ -99,9 +115,12 @@ function getDateString(date) {
   }
 
   return `${year}-${month}-${day}`;
+  */
 }
 
 function getDateTimeString(date) {
+  return moment.tz(date, TIMEZONE_NAME).format(DATETIME_FORMAT);
+/*
   date = date || new Date(); // today
 
   var year = date.getFullYear();
@@ -125,6 +144,7 @@ function getDateTimeString(date) {
   }
 
   return `${year}-${month}-${day}T${hour}:${min}`;
+*/
 }
 
 
@@ -244,7 +264,13 @@ function visitinglistView(req, res) {
   var authtoken = extractViewAuthToken(req);
 
   // date
-  var date = new Date(req.query.date ? req.query.date : getDateString());
+  //var date = new Date(req.query.date ? req.query.date : getDateString());
+  var dateText = req.query.date ? req.query.date : moment.tz(new Date(), TIMEZONE_NAME).format(DATE_FORMAT);
+
+  // converted
+  var date = moment.tz(dateText, TIMEZONE_NAME).toDate();
+
+
   var keyword = req.query.keyword;
   var type = req.query.type;
   var page = Number(req.query.page);
@@ -258,7 +284,7 @@ function visitinglistView(req, res) {
   }
 
   var query = {
-    date: date,
+    date: date.getTime(),
     type: type,
     keyword: keyword,
     page: page-1, // page starts with 0
