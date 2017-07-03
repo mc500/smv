@@ -296,6 +296,10 @@ function searchVisits(req, res) {
   }
 
   if (date) {
+    var n = Number(date);
+    if (!Number.isNaN(n)) {
+      date = n;
+    }
     if (new Date(date) == 'Invalid Date') {
       // Error 
       res.statusCode = 400;
@@ -304,8 +308,10 @@ function searchVisits(req, res) {
     }
 
     // Convert date in msec
+    //var d = new Date(date);
+    //var sdate = (d.getTime()-1000*(d.getSeconds()+d.getMinutes()*60+d.getHours()*3600)-d.getMilliseconds());
     var d = new Date(date);
-    var sdate = (d.getTime()-1000*(d.getSeconds()+d.getMinutes()*60+d.getHours()*3600)-d.getMilliseconds());
+    var sdate = d.getTime();
     var edate = (sdate + 24*3600*1000); // The day next
 
     selector['$and'].push({

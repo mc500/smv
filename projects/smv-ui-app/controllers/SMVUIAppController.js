@@ -92,9 +92,9 @@ function getNextDateTimeString() {
   date.setMilliseconds(0);
   // next day
   date.setDate(date.getDate()+1);
-  */
-
+  
   return getDateTimeString(date);
+  */
 }
 
 function getDateString(date) {
